@@ -171,7 +171,7 @@ CHIM.Append = function(count, lastkey, key) {
 		}
 	}
 	CHIM.buffer.push(key);
-	return Mudim.AdjustAccent('s');
+	return Mudim.AdjustAccent(CHIM.modes[Mudim.method-1][2][0]);
 }
 CHIM.AddKey = function( key ) {
 	var p = -1;
@@ -707,7 +707,7 @@ Mudim.UpdateUI = function(target,l) {
 		if ( l < b.length ) r++;
 		target.value = target.value.substring( 0, r ) +
 			b.toString().replace(/,/g,'') + target.value.substring( r + b.length );
-		CHIM.SetCursorPosition( target, c + 2 );	
+		CHIM.SetCursorPosition( target, c + (l<b.length ? 2 : 1) );
 		target.scrollTop = t;
 		if ( l < b.length ) return;
 	}
