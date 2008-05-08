@@ -272,8 +272,8 @@ CHIM.AddKey = function( key ) {
 						p=0;c=b[p];x=c.charCodeAt(0);
 					}					
 					if (Mudim.PutMark(p,x,1,v,n,true)) {
-						if (p>0 && CHIM.modes[Mudim.method-1][1].indexOf(n)==1 && i<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0) {
-							Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
+						if (p>0 && CHIM.modes[Mudim.method-1][1].indexOf(n)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0) {
+							 Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
 						}
 						found=true; 
 						break;
@@ -321,6 +321,7 @@ CHIM.BackSpace = function() {
 //----------------------------------------------------------------------------
 CHIM.ClearBuffer = function() {
 	CHIM.off = 0;
+	Mudim.w=0;
 	CHIM.buffer = [];
 	CHIM.Speller.Clear();
 	Mudim.ResetAccentInfo();
@@ -998,6 +999,7 @@ Mudim.PutMark = function(pos,charCodeAtPos,group,subsTab,key,checkDouble) {
 		if (v[i]==charCodeAtPos) {
 			switch (group) {
 				case 1:
+					if (CHIM.modes[Mudim.method-1][1].indexOf(key)==1) Mudim.w++;
 					if( i % 2 == 0 )
 						CHIM.SetCharAt( pos, v[i+1] );
 					else {
@@ -1044,17 +1046,26 @@ Mudim.ResetAccentInfo = function() {
 Mudim.AdjustAccent = function(vk) {
 	var p=Mudim.FindAccentPos(vk);
 	var a = Mudim.accent;	
-	var v,i;
+	var b=CHIM.buffer;
+	var v,i,j;
+	if (p<b.length-1 && p>0 && (i=CHIM.vn_OW.indexOf(b[p].charCodeAt(0)))>=0 && CHIM.vn_UW.indexOf(b[p-1].charCodeAt(0))>=0) {
+		if (Mudim.w==1) {
+			if (i%2==0) Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);
+			else Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+			return true;
+		}
+	}
 	if (a[0]>=0 && p>0 && a[0]!=p) {		// Automatically adjust the accent, when position changes
 		Mudim.PutMark(a[0],a[1],2,a[2],a[3],false);
 		for( i = 0; i < CHIM.vncode_2.length; i++ ) {
 			v = CHIM.vncode_2[i];
-			if (Mudim.PutMark(p,CHIM.buffer[p].charCodeAt(0),2,v,a[3],true)) {
+			if (Mudim.PutMark(p,b[p].charCodeAt(0),2,v,a[3],true)) {
 				break;
 			}
 		}
 		return true;
 	}
+	
 	return false;
 }
 //----------------------------------------------------------------------------
@@ -1115,6 +1126,7 @@ Mudim.method = 0;
 Mudim.newAccentRule = true;
 Mudim.oldMethod = 2;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
+Mudim.w=0;
 //----------------------------------------------------------------------------
 var DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr'];
 var SPELLCHECK_ID='mudim-checkspell';
@@ -1136,6 +1148,8 @@ if (!window.opera && document.all) { // IE
 // - Added attribute Mudim.accent which store information about the last accent function ResetAccentInfo
 // - Auto adjust accent position
 // - The problem with khuyur in 0.2 disappeared magically (Why?)
+// - Fix serious problem with textbox and textarea due to caret position (issue 2)
+// - Fix su73a in VNI and some issue related to 'uo' composiotion (issue 1)
 
 
 //Changes in version 0.2
