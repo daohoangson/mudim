@@ -1,0 +1,43 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Mudim testing</title>
+</head>
+<body bgcolor="lightBlue">
+	<center>
+	<h1>Thử nghiệm Mudim</h1>
+	<form>
+	<table width="60%">
+	<tr>
+		<td>Mudim với Text box : </td><td><input type="text"></td>
+	</tr>
+	<tr>
+		<td>Mudim với Textarea : </td><td><textarea cols="40" rows="10"></textarea></td>
+	</tr>
+	<tr>
+		<td>Mudim với iframe đơn</td>
+		<td>
+			<iframe id="singleiframe" src="about:blank" width="350" height="200"></iframe>
+		</td>
+	</tr>
+	<tr>
+		<td>Mudim với iframe kép</td>
+		<td>
+			<iframe id="singleiframe" src="iframe.html" width="350" height="200"></iframe><br>
+		</td>
+	</tr>
+	<tr>
+		<td>Mudim với các web editor</td>
+		<td align="center">
+			<a href="tinymce2/">TinyMCE</a> và <a href="fckeditor/">Fckeditor</a>
+		</td>
+	</tr>
+	</table>
+	</form>
+	</center>
+<!-- init_test.js is only for setting up the testing environment. You don't need this file in general -->
+<script src="test_init.js"></script>
+
+<script src="mudim-dev.js"></script>
+</body>
+</html>
