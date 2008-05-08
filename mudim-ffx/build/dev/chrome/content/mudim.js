@@ -1,47 +1,36 @@
 /*----------------------------------------------------------------------------
   CHIM - CHuoi's Input Method
 ----------------------------------------------------------------------------
-  copyright         : (C) 2005, 2006, 2007 by Dao Hai Lam/  website           : http:/xvnkb.sf.net/chim
+  copyright         : (C) 2005, 2006, 2007 by Dao Hai Lam/  website           : http:
   email             : daohailam<at>yahoo<dot>com
   last modify       : Thu, 05 Jul 2007 23:07:22 +0700
   version           : 0.9.3
 ----------------------------------------------------------------------------
  Mudim - Mudzot's Input Method
  (c)2008 
- http:/code.google.com/p/mudim
+ http:
  email: mudzot<at>gmail.com
  version: 0.3
- date: 09.05.08 ( Victory Day! )
+ date: 09.05.08 ( happy Victory Day! )
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 -------------------------------------------------------------------------------*/
-/* Begin configuration */
-PANEL_BACKGROUND='lightYellow';
-LANG=['Off','Spelling','New accent rule','On/Off','Show/Hide Panel'];
-IGNORE_ID = ['en_form'];	// e.g. ["f_password", "f_number", "f_english"]
-/* End configuration */
+
 //----------------------------------------------------------------------------
 // Class: CHIM
 //----------------------------------------------------------------------------
 CHIM = function() {
 	return this;
 }
-//----------------------------------------------------------------------------
-// Class Mudim
-//----------------------------------------------------------------------------
-Mudim = function() {
-	return this;
-}
+
 //----------------------------------------------------------------------------
 // Constants:
 //----------------------------------------------------------------------------
 CHIM.CHAR_A = 'A';
 CHIM.CHAR_a = 'a';
-CHIM.CHAR_E = 'E';
-CHIM.CHAR_e = 'e';
 CHIM.CHAR_U = 'U';
 CHIM.CHAR_u = 'u';
 CHIM.CHAR_G = 'G';
@@ -73,7 +62,8 @@ CHIM.CharIsUI = function(u) {
 	u = u.charCodeAt(0);
 	for ( n = 0; UI[n] != 0 && UI[n] != u; n++ );
 	return UI[n] != 0 ? n : -1;
-}//----------------------------------------------------------------------------
+}
+//----------------------------------------------------------------------------
 // Function: CHIM.CharIsO
 //	Checking if given character is O or not
 // Parameters:
@@ -197,7 +187,6 @@ CHIM.Append = function(count, lastkey, key) {
 		switch( key ) {
 			case 'h':
 			case 'H': // [cgknpt]h
-				my='mu';
 				if( lastkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lastkey) < 0 )
 					CHIM.off = count;
 				break;
@@ -242,7 +231,6 @@ CHIM.AddKey = function( key ) {
 	if( !count || CHIM.off != 0 ) {
 		return CHIM.Append(0, 0, key);
 	}
-
 	b = CHIM.buffer;
 	c = b[p = count - 1];
 	n = key.toLowerCase();
@@ -257,8 +245,8 @@ CHIM.AddKey = function( key ) {
 	c=b[p];
 	var x = c.charCodeAt(0);
 	var found = false;
-	//Actually put the mark on defined position
-	if( l == 1 ) {	//group 1
+	
+	if( l == 1 ) {	
 		m = m[0];
 		for( i = 0; !found && i < m.length; i++ ) {
 			var k = m[i];
@@ -268,12 +256,12 @@ CHIM.AddKey = function( key ) {
 					Mudim.AdjustAccent(n);
 					x=b[p].charCodeAt(0);
 					lord='dz';
-					if (CHIM.modes[Mudim.method-1][1].indexOf(n)==3) {			//Exception of dd, replace the first char
+					if (CHIM.modes[Mudim.method-1][1].indexOf(n)==3) {			
 						p=0;c=b[p];x=c.charCodeAt(0);
 					}					
 					if (Mudim.PutMark(p,x,1,v,n,true)) {
 						if (p>0 && CHIM.modes[Mudim.method-1][1].indexOf(n)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0) {
-							 Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
+							Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
 						}
 						found=true; 
 						break;
@@ -283,7 +271,7 @@ CHIM.AddKey = function( key ) {
 			}
 		}
 	}
-	else {	//and group 2
+	else {	
 		for( i = 0; i < CHIM.vncode_2.length; i++ ) {
 			v = CHIM.vncode_2[i];
 			if (Mudim.PutMark(p,x,2,v,n,true)) {
@@ -330,26 +318,10 @@ CHIM.ClearBuffer = function() {
 // Function: CHIM.SetDisplay
 //	Show current status on browser
 //----------------------------------------------------------------------------
+var methodNames=['off','vni','telex','viqr'];
+var SKIN=['simple','solid'];
 CHIM.SetDisplay = function() {
-	if ( typeof(DISPLAY_ID) != "undefined" && Mudim.method < DISPLAY_ID.length ) {
-		var r;
-		//Clear all button. This is needed by only the lazy rendering engine of my Konqueror
-		for (var i=0;i<4;i++) {
-			r=document.getElementById(DISPLAY_ID[i])
-			if (r) r.checked = false;
-		}
-		//Set the selected method on
-		 r = document.getElementById( DISPLAY_ID[Mudim.method] );
-		if ( r ) r.checked = true;
-	}
-	if ( typeof(SPELLCHECK_ID) != "undefined" ) {
-		var r = document.getElementById( SPELLCHECK_ID );
-		if ( r ) r.checked = CHIM.Speller.enabled;
-	}
-	if ( typeof(ACCENTRULE_ID) != "undefined" ) {
-		var r = document.getElementById( ACCENTRULE_ID );
-		if ( r ) r.checked = Mudim.newAccentRule;
-	}
+	document.getElementById("menubutton").setAttribute("src","chrome://mudim/skin/"+SKIN[Mudim.skinIdx]+"/"+methodNames[Mudim.method]+".png");
 }
 //----------------------------------------------------------------------------
 // Function: CHIM.SwitchMethod
@@ -358,8 +330,8 @@ CHIM.SetDisplay = function() {
 CHIM.SwitchMethod = function() {
 	CHIM.ClearBuffer();
 	Mudim.method = (++Mudim.method & 3);
-	CHIM.SetDisplay();
 	Mudim.SetPreference();
+	CHIM.SetDisplay();
 }
 //----------------------------------------------------------------------------
 // Function: CHIM.SetMethod
@@ -371,15 +343,10 @@ CHIM.SwitchMethod = function() {
 CHIM.SetMethod = function(m) {
 	CHIM.ClearBuffer();
 	Mudim.method = (m & 3);
-	CHIM.SetDisplay();
 	Mudim.SetPreference();
+	CHIM.SetDisplay();
 }
-//----------------------------------------------------------------------------
-// Function: CHIM.Toggle
-//----------------------------------------------------------------------------
 CHIM.Toggle = function() {
-	var p;
-	if (!(p=Mudim.Panel)) Mudim.InitPanel();
 	if (Mudim.method == 0) {
 		CHIM.SetMethod(Mudim.oldMethod);
 	}
@@ -404,20 +371,17 @@ CHIM.GetTarget = function(e) {
 		e = window.event;
 	if ( e == null )
 		return null;
-	if ( e.srcElement != null ) // IE
-		r = e.srcElement;
-	else {
-		var r = e.target;
-		while ( r && r.nodeType != 1 ) // climb up from text nodes on Moz
-			r = r.parentNode;
-	}
-
+	var r = e.target;
+	while ( r && r.nodeType != 1 ) // climb up from text nodes on Moz
+		r = r.parentNode;
 	if (r.tagName == 'BODY') {
 		r = r.parentNode;
 	}
-
-	CHIM.peckable = r.tagName=='HTML' || r.type=='textarea' || r.type=='text';
-
+	//Firefox search bar
+	if (r.id == "searchbar") {
+		r=r._textbox;
+	}
+	CHIM.peckable = r.tagName=='HTML' || r.type=='textarea' || r.type=='text' || r.tagName.indexOf('textbox')>-1;
 	return r;
 }
 //----------------------------------------------------------------------------
@@ -433,39 +397,7 @@ CHIM.GetCursorPosition = function( target ) {
 			target.selectionEnd < target.selectionStart)
 			return -1;
 		return target.selectionStart;
-	}
-	// IE
-	if (document.selection) {
-		var selection = document.selection.createRange();
-		var textRange = target.createTextRange();
-		// if the current selection is within the edit control
-		if (textRange == null || selection == null ||
-			((selection.text != "") && textRange.inRange(selection) == false))
-			return -1;
-		if (selection.text == "") {
-			var index = 1;
-			if ( target.tagName == "INPUT" ) {
-				var contents = textRange.text;
-				while (index < contents.length) {
-					textRange.findText(contents.substring(index));
-					if (textRange.boundingLeft == selection.boundingLeft) break;
-					index++;
-				}
-			}
-			// Handle text areas.
-			else if ( target.tagName == "TEXTAREA" ) {
-				var caret = document.selection.createRange().duplicate();
-				index = target.value.length + 1;
-				while (caret.parentElement() == target && caret.move("character", 1) == 1) {
-					--index;
-					if (target.value.charCodeAt(index) == 10) index -= 1;
-				}
-				if (index == target.value.length + 1) index = -1;
-			}
-			return index;
-		}
-		return textRange.text.indexOf(selection.text);
-	}
+	}	
 }
 //----------------------------------------------------------------------------
 // Function: CHIM.SetCursorPosition
@@ -506,12 +438,14 @@ CHIM.UpdateBuffer = function(target) {
 	CHIM.dirty = false;
 }
 //----------------------------------------------------------------------------
+CHIM.NOOP = [];	// e.g. ["f_password", "f_number", "f_english"]
+//----------------------------------------------------------------------------
 CHIM.VK_TAB = 9;
 CHIM.VK_BACKSPACE = 8;
 CHIM.VK_ENTER = 13;
 CHIM.VK_DELETE = 46;
 CHIM.VK_SPACE = 32;
-CHIM.VK_LIMIT = 128;
+CHIM.VK_LIMIT = 128
 CHIM.VK_LEFT_ARROW = 37;
 CHIM.VK_RIGHT_ARROW = 39;
 CHIM.VK_HOME = 36;
@@ -520,9 +454,8 @@ CHIM.VK_PAGE_UP = 33;
 CHIM.VK_PAGE_DOWN = 34;
 CHIM.VK_UP_ARROW = 38;
 CHIM.VK_DOWN_ARROW = 40;
-CHIM.VK_ONOFF = 120;	//F9
-CHIM.VK_ONOFF2 = 121;	//F10
-CHIM.VK_PANELTOGGLE = 119;	//F8
+CHIM.VK_ONOFF = '/'.charCodeAt(0);	
+CHIM.VK_SWITCHMETHOD = ','.charCodeAt(0);	
 //----------------------------------------------------------------------------
 // Function: ProcessControlKey
 //----------------------------------------------------------------------------
@@ -563,10 +496,12 @@ CHIM.ProcessControlKey = function(keyCode, release) {
 //	<CHIM.SwitchMethod>
 //----------------------------------------------------------------------------
 CHIM.IsHotkey = function(e, k) {
-	if ( k == CHIM.VK_PANELTOGGLE ) {
-		Mudim.TogglePanel();return true;
-	} else if (k == CHIM.VK_ONOFF || k == CHIM.VK_ONOFF2) {
-		CHIM.Toggle();
+	if (e.altKey || e.altLeft) {
+		if ( k == CHIM.VK_SWITCHMETHOD ) {
+			CHIM.SwitchMethod();
+		} else if (k == CHIM.VK_ONOFF) {
+			CHIM.Toggle();
+		}
 		return true;
 	}
 	return false;
@@ -581,7 +516,6 @@ CHIM.HTMLEditor = function() {
 // Function: CHIM.HTMLEditor.GetRange
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.GetRange = function(target) {
-	if (!target.parentNode.iframe) return;
 	var win = target.parentNode.iframe.contentWindow;
 	return (!window.opera && document.all) ?
 			win.document.selection.createRange() :
@@ -592,7 +526,6 @@ CHIM.HTMLEditor.GetRange = function(target) {
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.GetCurrentWord = function(target) {
 	var range = CHIM.HTMLEditor.GetRange(target);
-	if (!range) return '';
 	if (!window.opera && document.all) {
 		while (range.moveStart('character', -1) == -1) {
 			if (CHIM.separators.indexOf(range.text.charAt(0)) >= 0) {
@@ -627,6 +560,7 @@ CHIM.HTMLEditor.Process = function(target, l) {
 		range.pasteHTML(b.toString().replace(/,/g,''));
 		return;
 	}
+	//alert(b.toString().replace(/,/g,''));
 	var container = range.startContainer;
 	var offset = range.startOffset;
 	var start = offset - b.length + (l < b.length ? 1 : 0);
@@ -641,10 +575,10 @@ CHIM.HTMLEditor.Process = function(target, l) {
 // Function: CHIM.Freeze
 //----------------------------------------------------------------------------
 CHIM.Freeze = function(target) {
-	var ign = IGNORE_ID;
-	if (ign.length > 0)
-	for ( var i = 0; i < ign.length; i++ )
-		if( target.id == ign[i] ) return true;
+	var NOOP = CHIM.NOOP;
+	if (NOOP.length > 0)
+	for ( var i = 0; i < NOOP.length; i++ )
+		if( target.id == NOOP[i] ) return true;
 	return false;
 }
 //----------------------------------------------------------------------------
@@ -660,8 +594,11 @@ CHIM.KeyHandler = function(e) {
 		keyCode = e.charCode;
 	if ( keyCode == 0 ) // unlikely to get here
 		keyCode = e.which;
-
+	if ( CHIM.IsHotkey(e, keyCode) )
+		return;
+		
 	if ( !Mudim.method ) return;
+	
 	var target = null;
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) return;
 	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) return;
@@ -675,7 +612,6 @@ CHIM.KeyHandler = function(e) {
 			if ( CHIM.dirty )
 				CHIM.UpdateBuffer( target );
 
-			var b = CHIM.buffer;
 			var l = CHIM.buffer.length;
 			if (CHIM.AddKey(key) ) {
 				if (CHIM.off==0) {
@@ -705,18 +641,16 @@ CHIM.KeyHandler = function(e) {
 CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) e = window.event;
-	if (CHIM.IsHotkey(e,e.keyCode)) return;
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLetf ) {
-		return;
-	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) return;
+	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey ||
+			e.shiftKey || e.shiftLetf ) return;
+
 	var keyCode = e.keyCode;
 	if ( keyCode == 0 ) // as it might on Moz
 		keyCode = e.charCode;
 
 	if ( keyCode == 0 ) // unlikely to get here
 		keyCode = e.which;
-
 	CHIM.ProcessControlKey( keyCode, false );
 }
 //----------------------------------------------------------------------------
@@ -736,46 +670,45 @@ CHIM.MouseDown = function(e) {
 //	r - boolean value indicates that CHIM functions will replace the
 //		default handlers
 //----------------------------------------------------------------------------
-CHIM.Attach = function(e, r) {
+CHIM.Attach = function(e) {
 	if (!e) return;
-
 	if (!e.chim) {
-			if (!r) {
-				if (!window.opera && document.all) { // IE
-					e.attachEvent('onkeydown', CHIM.KeyDown);
-					e.attachEvent('onkeypress', CHIM.KeyHandler);
-					e.attachEvent('onmousedown', CHIM.MouseDown);
-				}
-				else { // Moz & others
-					e.addEventListener('keydown', CHIM.KeyDown, false);
-					e.addEventListener('keypress', CHIM.KeyHandler, false);
-					e.addEventListener('mousedown', CHIM.MouseDown, false);
-				}
+		try {
+			if (e.designMode=="on" || e.designMode=="off") {		//iframe
+				e.addEventListener("keypress",CHIM.KeyHandler,true);
+				e.addEventListener("keydown",CHIM.KeyDown,true);
+				e.addEventListener("mousedown",CHIM.MouseDown,true);
+			} else {			//root document
+				e.onkeypress=CHIM.KeyHandler;
+				e.onkeydown=CHIM.KeyDown;
+				e.onmousedown=CHIM.MouseDown;
 			}
-			else {
-				e.onkeydown = CHIM.KeyDown;
-				e.onkeypress = CHIM.KeyHandler;
-				e.onmousedown = CHIM.MouseDown;
-			}
-		e.chim = true;
+		} catch(ex) {}
 	}
-
-	var f = e.getElementsByTagName('iframe');
+	e.chim = true;
+	var f
+	if (e.getElementById("content")!=null) {
+		f=e.getElementById("content").selectedBrowser.contentDocument.getElementsByTagName("iframe");
+	} else {
+		f=e.getElementsByTagName("iframe");
+	} 
 	for (var i = 0; i < f.length; i++) {
-		var doc = (!window.opera && document.all) ?
-				f[i].contentWindow.document : f[i].contentDocument;
+		var doc = f[i].contentDocument;
 		try {
 			doc.iframe = f[i];
-			CHIM.Attach(doc, false);
+			CHIM.Attach(doc);
 		} catch(e) {}
 	}
-	var f = e.getElementsByTagName('frame');
+
+	if (e.getElementById("content")!=null) {
+		f=e.getElementById("content").selectedBrowser.contentDocument.getElementsByTagName("frame");
+	} else {
+		f=e.getElementsByTagName("frame");
+	}
 	for (var i = 0; i < f.length; i++) {
-		var doc = (!window.opera && document.all) ?
-				f[i].contentWindow.document : f[i].contentDocument;
 		try {
 			doc.iframe = f[i];
-			CHIM.Attach(doc, false);
+			CHIM.Attach(doc);
 		} catch(e) {}
 	}
 }
@@ -783,11 +716,9 @@ CHIM.Attach = function(e, r) {
 // Function: CHIM.Activate
 //----------------------------------------------------------------------------
 CHIM.Activate = function() {
-	Mudim.InitPanel();
-	CHIM.Attach(document, true);
+	CHIM.Attach(document);
 	CHIM.SetDisplay();
 }
-//----------------------------------------------------------------------------
 //  Code tables
 //----------------------------------------------------------------------------
 CHIM.vn_A0=[65,193,192,7842,195,7840];
@@ -875,11 +806,6 @@ CHIM.UI=[
 	236,7881,297,7883,0
 ];
 //----------------------------------------------------------------------------
-CHIM.O=[
-	79,211,210,7886,213,7884,111,243,242,7887,245,7885,212,7888,7890,7892,
-	7894,7896, 244,7889,7891,7893,7895,7897,416,7898,7900,7902,7904,7906,
-	417,7899,7901,7903,7905,7907,0];
-//----------------------------------------------------------------------------
 CHIM.VN=[
 	97,65,225,193,224,192,7843,7842,227,195,7841,7840,226,194,7845,7844,7847,
 	7846,7849,7848,7851,7850,7853,7852,259,258,7855,7854,7857,7856,7859,7858,
@@ -892,6 +818,59 @@ CHIM.VN=[
 	7917,7916,7919,7918,7921,7920,105,73,237,205,236,204,7881,7880,297,296,
 	7883,7882,273,272,0
 ];
+CHIM.O=[
+	79,211,210,7886,213,7884,111,243,242,7887,245,7885,212,7888,7890,7892,
+	7894,7896, 244,7889,7891,7893,7895,7897,416,7898,7900,7902,7904,7906,
+	417,7899,7901,7903,7905,7907,0];
+//----------------------------------------------------------------------------
+Mudim = function() {
+	return this;
+}
+//----------------------------------------------------------------------------
+Mudim.method = 0;
+Mudim.newAccentRule = true;
+Mudim.oldMethod = 2;
+Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
+Mudim.w=0;
+Mudim.skinIdx=0;
+//----------------------------------------------------------------------------
+
+Mudim.StatusBarClicked = function(e) {
+	switch (e.button) {
+		case 0:
+			CHIM.SwitchMethod();
+			break;
+		case 2:
+			e.target.parentNode.lastChild.showPopup(e.target,-1,-1,"popup","bottomleft","topleft");
+			break;
+	};
+}
+Mudim.MenuClicked = function(target) {
+	var value=target.getAttribute("value");
+	if ((value<4)&&(value>-1)) {
+		CHIM.SetMethod(value);
+	} else if (value==4) {
+		CHIM.Speller.Toggle();
+	} else if (value==5) {
+		Mudim.ToggleAccentRule();
+	}
+}
+Mudim.UpdateMenu = function(m) {
+	var items=m.childNodes;
+	for (var i=0;i<3;i++) items[i].setAttribute("checked",Mudim.method==(3-i));
+	items[4].setAttribute("checked",Mudim.method==0); 
+	items[6].setAttribute("checked",CHIM.Speller.enabled);
+	items[8].setAttribute("checked",Mudim.newAccentRule);
+}
+Mudim.MenuSkinClicked = function(target) {
+	Mudim.skinIdx=target.getAttribute("value");
+	CHIM.SetDisplay();
+}
+Mudim.UpdateMenuSkin = function(m) {
+	var items=m.childNodes;
+	for (var i=0;i<items.length;i++) items[i].setAttribute("checked",Mudim.skinIdx==i);
+}
+
 //---------------------------------------------------------------------------
 // Function: UpdateUI
 //	Synchronize text content with internal buffer after adding key
@@ -928,7 +907,7 @@ Mudim.FindAccentPos = function(nKey) {
 	var k=nKey.toLowerCase();
 	var m=CHIM.modes[Mudim.method-1];
 	var b=CHIM.buffer;
-	var len=b.length;
+	var len=b.length
 	var i,j,l,p,c;
 	if (!len || CHIM.off!=0) return -1;
 	for( i = 1; i < m.length; i++ )
@@ -1065,106 +1044,27 @@ Mudim.AdjustAccent = function(vk) {
 		}
 		return true;
 	}
-	
 	return false;
 }
-//----------------------------------------------------------------------------
-// Function: Mudim.SetPreference()
-//----------------------------------------------------------------------------
-Mudim.SetPreference = function() {
-	var d=new Date();
-	d.setTime(d.getTime()+604800000);
-	var tail=';expire='+d.toGMTString()+';path=/';
-	var value=CHIM.Speller.enabled ? Mudim.method+4 : Mudim.method;
-	document.cookie='|mudim-settings='+value+tail;
-}
-//----------------------------------------------------------------------------
-// Function: Mudim.GetPreference()
-//----------------------------------------------------------------------------
-Mudim.GetPreference = function() {
-	var c=document.cookie.split(';');
-	for (var i=0;i<c.length && c[i].indexOf('|mudim-settings')<0;i++);
-	if (i==c.length) {
-		CHIM.SetDisplay();
-		Mudim.ShowPanel();
-	} else {
-		var value=parseInt(c[i].split('=')[1],10);
-		Mudim.method = value & 3;
-		CHIM.Speller.enabled = (value & 4) ? true : false;
-		Mudim.HidePanel();
-	}
-}
-//----------------------------------------------------------------------------
-// Function: Mudim.GetPreference()
-//----------------------------------------------------------------------------
 Mudim.ToggleAccentRule = function() {
 	Mudim.newAccentRule = !Mudim.newAccentRule;
 }
-//----------------------------------------------------------------------------
-// Function: Mudim.TogglePanel()
-//----------------------------------------------------------------------------
-Mudim.TogglePanel = function() {
-	Mudim.Panel.style.display = (Mudim.Panel.style.display=='')? 'None' : '';
+Mudim.GetPreference = function() {
+	Mudim.method=Mudim.settings.getIntPref("mudim.settings.method");
+	CHIM.Speller.enabled=Mudim.settings.getBoolPref("mudim.settings.spellChecking");
+	Mudim.newAccentRule=Mudim.settings.getBoolPref("mudim.settings.accentRule");
+	Mudim.skinIdx=Mudim.settings.getIntPref("mudim.settings.skinIdx");
 }
-Mudim.ShowPanel = function() {
-	Mudim.Panel.style.display = '';
+Mudim.SetPreference = function() {
+	Mudim.settings.setIntPref("mudim.settings.method",Mudim.method);
+	Mudim.settings.setBoolPref("mudim.settings.spellChecking",CHIM.Speller.enabled);
+	Mudim.settings.setBoolPref("mudim.settings.accentRule",Mudim.newAccentRule);
+	Mudim.settings.setIntPref("mudim.settings.skinIdx",Mudim.skinIdx);
 }
-Mudim.HidePanel = function() {
-	Mudim.Panel.style.display = 'None';
+Mudim.settings = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getBranch("chim");
+try {
+	Mudim.GetPreference();
+} catch(e) {
+	Mudim.SetPreference();
 }
-Mudim.InitPanel = function() {
-	if (!Mudim.Panel) {
-		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.3 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
-		document.body.insertBefore(f,document.body.firstChild);
-		Mudim.Panel=f;
-		Mudim.GetPreference();
-	}
-}
-//----------------------------------------------------------------------------
-Mudim.method = 0;
-Mudim.newAccentRule = true;
-Mudim.oldMethod = 2;
-Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
-Mudim.w=0;
-//----------------------------------------------------------------------------
-var DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr'];
-var SPELLCHECK_ID='mudim-checkspell';
-var ACCENTRULE_ID='mudim-accentrule';
-
-if (!window.opera && document.all) { // IE
-	window.attachEvent("onload",CHIM.Activate);
-} else {
-	window.addEventListener("load",CHIM.Activate,false);
-}
-// Change log
-
-//Changes in version 0.3
-// - First public release
-// - Shorthand ruoiw for ruwowi and similar situations
-// - Refactoring work:
-//	+ FindAccentPos and PutMark from AddKey
-//	+ UpdateUI from KeyHandler
-// - Added attribute Mudim.accent which store information about the last accent function ResetAccentInfo
-// - Auto adjust accent position
-// - The problem with khuyur in 0.2 disappeared magically (Why?)
-// - Fix serious problem with textbox and textarea due to caret position (issue 2)
-// - Fix su73a in VNI and some issue related to 'uo' composiotion (issue 1)
-
-
-//Changes in version 0.2
-// - Happy to see it run on Opera and Konqueror, some modifications in hotkey implementation, though, 
-//	which use new attribute Mudin.oldMethod to store the old method when toggle.
-// - Fix some bugs with 'ua' composition
-// - Limited support for old accent rule with new attribute Mudin.newAccentRule.
-//	I peronally recommend the new accent rule, that's why I don't store this attribute in cookie.
-//	It means that if you prefer the old rule, you have to explicitly select it every time you open a new page.
-// - Add 1 more toggle hotkey F10 as an alternative to F9 in case of conflict with browser hotkeys.
-// - Fix permission error in javascript console when try to attach to cross-site iframe
-// - Known issue : khuyur
-
-//Changes in Mudim 0.1 from CHIM:
-// - Easy-to-use control panel (credit for this smart idea goes to Wasabi with his BIM)
-// - Save settings in cookie
-// - Ability to put ALL diacritical marks at the end of word
-// - Fix hotkey problem in IE
+window.addEventListener("load", CHIM.Activate, false);
