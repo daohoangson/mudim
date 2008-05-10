@@ -7,11 +7,11 @@
   version           : 0.9.3
 ----------------------------------------------------------------------------
  Mudim - Mudzot's Input Method
- (c)2008 
+ (c)2008 by Mudzot
  http:/code.google.com/p/mudim
  email: mudzot<at>gmail.com
- version: 0.3
- date: 09.05.08 ( Victory Day! )
+ version: 0.4
+ date: 10.05.08
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 -------------------------------------------------------------------------------*/
 /* Begin configuration */
 PANEL_BACKGROUND='lightYellow';
-LANG=['Off','Spelling','New accent rule','On/Off','Show/Hide Panel'];
+LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
 IGNORE_ID = ['en_form'];	// e.g. ["f_password", "f_number", "f_english"]
 /* End configuration */
 //----------------------------------------------------------------------------
@@ -1120,7 +1120,7 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.3 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
+		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.4 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
 		document.body.insertBefore(f,document.body.firstChild);
 		Mudim.Panel=f;
 		Mudim.GetPreference();
