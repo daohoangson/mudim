@@ -1,3 +1,0 @@
-content	mudim jar:chrome/mudim.jar!/content/
-skin	mudim classic/1.0 jar:chrome/mudim.jar!/skin/
-overlay	chrome://browser/content/browser.xul	chrome://mudim/content/mudim.xul
