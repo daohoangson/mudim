@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>mudim@svol.ru</em:id>
+		<em:name>Mudim</em:name>
+		<em:version>0.4</em:version>
+		<em:description>Vietnamese input method</em:description>
+		<em:creator>Mudzot</em:creator>
+		<em:contributor>MrChuoi</em:contributor>
+		<em:contributor>Vnpenguin</em:contributor>
+		<em:homepageURL>http://code.google.com/p/mudim/</em:homepageURL>
+		<em:file>
+			<Description about="urn:mozilla:extension:file:chim.jar">
+			<em:package>content/</em:package>
+			<em:package>skin/</em:package>
+			</Description>
+		</em:file>
+		<em:targetApplication>
+			<Description>
+			<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+			<em:minVersion>1.0</em:minVersion>
+			<em:maxVersion>3.0pre</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	</Description>
+</RDF>
