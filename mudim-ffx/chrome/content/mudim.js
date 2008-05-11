@@ -557,7 +557,7 @@ CHIM.HTMLEditor.Process = function(target, l) {
 	var range = CHIM.HTMLEditor.GetRange(target);
 	var b = CHIM.buffer;
 	if (!window.opera && document.all) {
-		var x = -b.length + (l < b.length ? 1 : 0);
+		var x = -l;
 		range.moveStart('character', x);
 		range.moveEnd('character', x+b.length);
 		range.pasteHTML(b.toString().replace(/,/g,''));
@@ -565,10 +565,10 @@ CHIM.HTMLEditor.Process = function(target, l) {
 	}
 	var container = range.startContainer;
 	var offset = range.startOffset;
-	var start = offset - b.length + (l < b.length ? 1 : 0);
+	var start = offset - l;
 
 	container.nodeValue = container.nodeValue.substring(0, start) +
-		b.toString().replace(/,/g,'') + container.nodeValue.substring(start + b.length);
+		b.toString().replace(/,/g,'') + container.nodeValue.substring(start + l);
 	if (l<b.length) {offset++;}
 	range.setEnd(container, offset);
 	range.setStart(container, offset);
@@ -843,10 +843,10 @@ Mudim.skinIdx=0;
 Mudim.StatusBarClicked = function(e) {
 	switch (e.button) {
 		case 0:
-			CHIM.SwitchMethod();
+			if (e.target.tagName=='image') CHIM.SwitchMethod();
 			break;
 		case 2:
-			e.target.parentNode.lastChild.showPopup(e.target,-1,-1,"popup","bottomleft","topleft");
+			if (e.target.tagName=='image') e.target.parentNode.lastChild.showPopup(e.target,-1,-1,"popup","bottomleft","topleft");
 			break;
 	};
 };
@@ -893,13 +893,11 @@ Mudim.UpdateUI = function(target,l) {
 	var c = CHIM.GetCursorPosition( target ) - 1;
 	if ( c >= 0 ) {
 		var t = target.scrollTop;
-		var r = c - b.length + 1;
-		if ( l < b.length ) {r++;}
+		var r = c - l + 1;
 		target.value = target.value.substring( 0, r ) +
-			b.toString().replace(/,/g,'') + target.value.substring( r + b.length );
+			b.toString().replace(/,/g,'') + target.value.substring( r + l );
 		CHIM.SetCursorPosition( target, c + (l<b.length ? 2 : 1) );
 		target.scrollTop = t;
-		if ( l < b.length ) {return;}
 	}
 };
 //---------------------------------------------------------------------------

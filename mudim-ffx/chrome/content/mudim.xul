@@ -14,7 +14,7 @@
 				<menuseparator/>
 				<menuitem label="Soát chính tả" type="checkbox" value="4"/>
 				<menuseparator/>
-				<menuitem label="Bỏ dấu kiểu cũ" type="checkbox" value="5"/>
+				<menuitem label="Bỏ dấu kiểu mới" type="checkbox" value="5"/>
 				<menuseparator/>
 				<menu label="Skin">
 					<menupopup onpopupshowing="Mudim.UpdateMenuSkin(this);" oncommand="Mudim.MenuSkinClicked(event.target); event.stopPropagation();">
