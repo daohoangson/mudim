@@ -10,8 +10,8 @@
  (c)2008 by Mudzot
  http:/code.google.com/p/mudim
  email: mudzot<at>gmail.com
- version: 0.4
- date: 10.05.08
+ version: 0.5
+ date: 11.05.08
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -603,7 +603,7 @@ CHIM.HTMLEditor.GetCurrentWord = function(target) {
 	if (!(s = range.startContainer.nodeValue)) {return '';}
 	var c = range.startOffset - 1;
 	if (c > 0) {
-		while ( c >= 0 && CHIM.separators.indexOf(s.charAt(c)) < 0 ) {
+		while ( c >= 0 && CHIM.separators.indexOf(s.charAt(c)) < 0 && s.charCodeAt(c)!=160) {	//It's so strange that space character appears to have code 160 in iframe. But issue 7 fixed
 			word = s.charAt(c) + word;
 			c = c - 1;
 		}
@@ -1114,7 +1114,7 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.4 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
+		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.5 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
 		document.body.insertBefore(f,document.body.firstChild);
 		Mudim.Panel=f;
 		Mudim.GetPreference();
@@ -1135,6 +1135,10 @@ if (!window.opera && document.all) { // IE
 }
 // Change log
 
+//Changes in 0.5
+// Issue 6,7 fixed
+
+//Changes in 0.4
 // - Standardize coding style for compatibility with javascript compressor (issue 3)
 // - Fix spelling feature (issue 4)
 // - Fix problem with readding accent

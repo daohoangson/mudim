@@ -4,7 +4,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>mudim@svol.ru</em:id>
 		<em:name>Mudim</em:name>
-		<em:version>0.4-r17</em:version>
+		<em:version>0.5.19</em:version>
 		<em:description>Vietnamese input method</em:description>
 		<em:creator>Mudzot</em:creator>
 		<em:contributor>MrChuoi</em:contributor>
