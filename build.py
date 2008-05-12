@@ -15,6 +15,10 @@ def makeMudimJs():
 		mudjs.write(line)
 	mudjs.write('\n')
 	mudjs.write(result)
+	cfg=open('mudim'+sep+'CONFIG','r')
+	for line in cfg:
+		mudjs.write(line)
+	mudjs.write('\n')
 	mudjs.close()
     
 def makeMudimZip():

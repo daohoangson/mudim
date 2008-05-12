@@ -18,11 +18,9 @@
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 -------------------------------------------------------------------------------*/
-/* Begin configuration */
-PANEL_BACKGROUND='lightYellow';
-LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
-IGNORE_ID = ['en_form'];	// e.g. ["f_password", "f_number", "f_english"]
-/* End configuration */
+
+// Development environment: Firefox with Firebug extension
+
 //----------------------------------------------------------------------------
 // Class: CHIM
 //----------------------------------------------------------------------------
@@ -140,15 +138,16 @@ CHIM.Speller.Clear = function() {
 CHIM.Speller.Last = function() {
 	return CHIM.Speller.lasts[CHIM.Speller.count - 1];
 };
+my='mu';
 //----------------------------------------------------------------------------
 // Function: CHIM.Append
 //----------------------------------------------------------------------------
 CHIM.Append = function(count, lastkey, key) {
+	//console.debug('|%s| (Begin Append)',CHIM.buffer);
 	var consonants = "BCDFGHJKLMNPQRSTVWXZbcdfghjklmnpqrstvwxz";
 	var spchk = "AIUEOYaiueoy|BDFJKLQSVWXZbdfjklqsvwxz|'`~?.^*+=";
 	var vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|";
 	var nvchk = "FfJjWwZz";
-
 	var separators = "!@#$%^&*()_+=-{}[]|\\:\";'<>?,./~`";
 	if ( separators.indexOf(key) >= 0 ) {
 		CHIM.ClearBuffer();
@@ -189,7 +188,6 @@ CHIM.Append = function(count, lastkey, key) {
 			switch( key ) {
 				case 'h':
 				case 'H': // [cgknpt]h
-					my='mu';
 					if( lastkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lastkey) < 0 )
 						CHIM.off = count;
 					break;
@@ -231,6 +229,7 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
+	//console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 ) {
 		return CHIM.Append(0, 0, key);
 	}
@@ -258,7 +257,6 @@ CHIM.AddKey = function( key ) {
 					v = CHIM.vncode_1[k[i]];
 					Mudim.AdjustAccent(n);
 					x=b[p].charCodeAt(0);
-					lord='dz';
 					if (CHIM.modes[Mudim.method-1][1].indexOf(n)==3) {			//Exception of dd, replace the first char
 						p=0;c=b[p];x=c.charCodeAt(0);
 					}					
@@ -286,15 +284,19 @@ CHIM.AddKey = function( key ) {
 	if( !found ) {
 		return CHIM.Append(count, c, key);
 	}
-	if (CHIM.off!=0) CHIM.buffer.push(key);
+	if (CHIM.off!=0) {
+		CHIM.buffer.push(key);
+	}
 	return p>=0;
 };
+lord='dz';
 //----------------------------------------------------------------------------
 // Function: CHIM.BackSpace
 //	Delete the last char in internal buffer and update Speller status
 //----------------------------------------------------------------------------
 CHIM.BackSpace = function() {
 	var count = CHIM.buffer.length;
+	if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
 	if( count <= 0 )
 		CHIM.dirty = true;
 	else {
@@ -650,7 +652,7 @@ CHIM.Freeze = function(target) {
 //----------------------------------------------------------------------------
 CHIM.KeyHandler = function(e) {
 	if ( e == null ) {e = window.event;}
-	if (e.isHandled==true) {return}
+	if (e.isHandled==true) {return;}
 	e.isHandled=true;
 	var keyCode = e.keyCode;
 	if ( keyCode == 0 ) {	// as it might on Moz
@@ -672,7 +674,6 @@ CHIM.KeyHandler = function(e) {
 			if ( CHIM.dirty ) {
 				CHIM.UpdateBuffer( target );
 			}
-			var b = CHIM.buffer;
 			var l = CHIM.buffer.length;
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
@@ -954,7 +955,7 @@ Mudim.FindAccentPos = function(nKey) {
 					case CHIM.CHAR_Y:
 					case CHIM.CHAR_y:
 						//old accent rule : tu`y, hu?y, .... but quy` , quy?
-						if ( (!Mudim.newAccentRule) && i-2>=0 && b[i-2]!=CHIM.CHAR_q && b[i-2]!=CHIM.CHAR_Q ) {i--;is='ot'}
+						if ( (!Mudim.newAccentRule) && i-2>=0 && b[i-2]!=CHIM.CHAR_q && b[i-2]!=CHIM.CHAR_Q ) {i--;}
 						break;
 				}
 			}
@@ -976,6 +977,7 @@ Mudim.FindAccentPos = function(nKey) {
 	if (m[1].indexOf(k)==3 && b[0]=='d') {return 0;}
 	return p;
 };
+is='ot';
 //---------------------------------------------------------------------------
 //Function Mudim.PutMark
 //	put diacritical mark
@@ -988,6 +990,7 @@ Mudim.FindAccentPos = function(nKey) {
 //	checkDouble: raise CHIM.off when delete mark
 //---------------------------------------------------------------------------
 Mudim.PutMark = function(pos,charCodeAtPos,group,subsTab,key,checkDouble) {
+	//console.debug('|%s| (Begin PutMark)',CHIM.buffer);
 	var v = subsTab;
 	for (var i=0;i<v.length;i++) {
 		if (v[i]==charCodeAtPos) {
@@ -1013,11 +1016,9 @@ Mudim.PutMark = function(pos,charCodeAtPos,group,subsTab,key,checkDouble) {
 						} else {
 							CHIM.SetCharAt(pos, v[0]);
 							Mudim.ResetAccentInfo();
-							//CHIM.buffer.push(key);
 							if (checkDouble) {
 								CHIM.off = CHIM.buffer.length + 1;
 							}
-							//return false;
 						}
 					}
 			}
@@ -1040,6 +1041,7 @@ Mudim.ResetAccentInfo = function() {
 //	true if successfully accent has been updated
 //---------------------------------------------------------------------------
 Mudim.AdjustAccent = function(vk) {
+	//console.debug('|%s| (Begin AdjustAccent)',CHIM.buffer);
 	var p=Mudim.FindAccentPos(vk);
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
@@ -1070,7 +1072,6 @@ Mudim.AdjustAccent = function(vk) {
 		}
 		return true;
 	}
-	
 	return false;
 };
 //----------------------------------------------------------------------------
@@ -1133,6 +1134,9 @@ Mudim.newAccentRule = true;
 Mudim.oldMethod = 2;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w=0;
+PANEL_BACKGROUND='lightYellow';
+LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
 if (!window.opera && document.all) { // IE
@@ -1142,6 +1146,8 @@ if (!window.opera && document.all) { // IE
 }
 // Change log
 
+// Fix issue 9
+// Add debug lines (Firebug is required) which will be removed in packaging script
 //Fix issue 8
 //SetPreference when Show/Hide Panel
 

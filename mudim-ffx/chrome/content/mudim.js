@@ -10,8 +10,8 @@
  (c)2008 
  http:
  email: mudzot<at>gmail.com
- version: 0.3
- date: 09.05.08 ( happy Victory Day! )
+ version: 0.5
+ date: 11.05.08
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -289,6 +289,7 @@ CHIM.AddKey = function( key ) {
 //----------------------------------------------------------------------------
 CHIM.BackSpace = function() {
 	var count = CHIM.buffer.length;
+	if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
 	if( count <= 0 ) {
 		CHIM.dirty = true;
 	} else {
@@ -1031,10 +1032,19 @@ Mudim.AdjustAccent = function(vk) {
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
 	var v,i,j;
+	//uo
 	if (p<b.length-1 && p>0 && (i=CHIM.vn_OW.indexOf(b[p].charCodeAt(0)))>=0 && CHIM.vn_UW.indexOf(b[p-1].charCodeAt(0))>=0) {
 		if (Mudim.w==1) {
-			if (i%2==0) Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);
-			else Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+			if (i%2==0) {	//u+o
+				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);	//u+ o+
+				if (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) {	//if word starts with 'q' then change to uo+
+					Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+				}
+			} else {	//uo+
+				if (b[0]!=CHIM.CHAR_q && b[0]!=CHIM.CHAR_Q) {	//if word doesnt start with 'q' then change to u+o+
+					Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+				}
+			}
 			return true;
 		}
 	}

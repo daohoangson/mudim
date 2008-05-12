@@ -1,0 +1,3 @@
+PANEL_BACKGROUND='lightYellow';
+LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+IGNORE_ID = ['en_form'];
