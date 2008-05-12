@@ -1044,12 +1044,18 @@ Mudim.AdjustAccent = function(vk) {
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
 	var v,i,j;
+	//uo
 	if (p<b.length-1 && p>0 && (i=CHIM.vn_OW.indexOf(b[p].charCodeAt(0)))>=0 && CHIM.vn_UW.indexOf(b[p-1].charCodeAt(0))>=0) {
 		if (Mudim.w==1) {
-			if (i%2==0) {
-				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);
-			} else {
-				Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+			if (i%2==0) {	//u+o
+				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);	//u+ o+
+				if (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) {	//if word starts with 'q' then change to uo+
+					Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+				}
+			} else {	//uo+
+				if (b[0]!=CHIM.CHAR_q && b[0]!=CHIM.CHAR_Q) {	//if word doesnt start with 'q' then change to u+o+
+					Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1][1],false);
+				}
 			}
 			return true;
 		}
@@ -1104,6 +1110,7 @@ Mudim.ToggleAccentRule = function() {
 //----------------------------------------------------------------------------
 Mudim.TogglePanel = function() {
 	Mudim.Panel.style.display = (Mudim.Panel.style.display=='')? 'None' : '';
+	Mudim.SetPreference();
 };
 Mudim.ShowPanel = function() {
 	Mudim.Panel.style.display = '';
@@ -1134,6 +1141,9 @@ if (!window.opera && document.all) { // IE
 	window.addEventListener("load",CHIM.Activate,false);
 }
 // Change log
+
+//Fix issue 8
+//SetPreference when Show/Hide Panel
 
 //Changes in 0.5
 // Issue 6,7 fixed

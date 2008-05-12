@@ -543,7 +543,7 @@ CHIM.HTMLEditor.GetCurrentWord = function(target) {
 	if (!(s = range.startContainer.nodeValue)) {return '';}
 	var c = range.startOffset - 1;
 	if (c > 0) {
-		while ( c >= 0 && CHIM.separators.indexOf(s.charAt(c)) < 0 ) {
+		while ( c >= 0 && CHIM.separators.indexOf(s.charAt(c)) < 0 && s.charCodeAt(c)!=160) {	//It's so strange that space character appears to have code 160 in iframe. But issue 7 fixed
 			word = s.charAt(c) + word;
 			c = c - 1;
 		}
