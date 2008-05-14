@@ -6,15 +6,16 @@
 			<box id="mudim-button" label="Mudim" onclick="Mudim.StatusBarClicked(event)">
 			<image src="chrome://mudim/skin/simple/off.png" tooltiptext="Mudim - Bộ gõ tiếng Việt" id="menubutton"/>
 			<menupopup onpopupshowing="Mudim.UpdateMenu(this);" oncommand="Mudim.MenuClicked(event.target); event.stopPropagation();">
+				<menuitem label="AUTO" type="checkbox" value="4"/>
 				<menuitem label="VIQR" type="checkbox" value="3"/>
 				<menuitem label="TELEX" type="checkbox" value="2"/>
 				<menuitem label="VNI" type="checkbox" value="1"/>
 				<menuseparator/>
 				<menuitem label="Tắt" type="checkbox" value="0"/>
 				<menuseparator/>
-				<menuitem label="Soát chính tả" type="checkbox" value="4"/>
+				<menuitem label="Soát chính tả" type="checkbox" value="5"/>
 				<menuseparator/>
-				<menuitem label="Bỏ dấu kiểu mới" type="checkbox" value="5"/>
+				<menuitem label="Bỏ dấu kiểu mới" type="checkbox" value="6"/>
 				<menuseparator/>
 				<menu label="Skin">
 					<menupopup onpopupshowing="Mudim.UpdateMenuSkin(this);" oncommand="Mudim.MenuSkinClicked(event.target); event.stopPropagation();">

@@ -1,16 +1,17 @@
 /*----------------------------------------------------------------------------
   CHIM - CHuoi's Input Method
 ----------------------------------------------------------------------------
-  copyright         : (C) 2005, 2006, 2007 by Dao Hai Lam/  website           : http:/xvnkb.sf.net/chim
+  copyright         : (C) 2005, 2006, 2007 by Dao Hai Lam/  website           : 
+  http://xvnkb.sf.net/chim
   email             : daohailam<at>yahoo<dot>com
   last modify       : Thu, 05 Jul 2007 23:07:22 +0700
   version           : 0.9.3
 ----------------------------------------------------------------------------
  Mudim - Mudzot's Input Method
  (c)2008 by Mudzot
- http:/code.google.com/p/mudim
+ http://code.google.com/p/mudim
  email: mudzot<at>gmail.com
- version: 0.5
+ version: 0.6
  date: 11.05.08
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
@@ -36,7 +37,7 @@ Mudim = function() {
 //----------------------------------------------------------------------------
 // Constants:
 //----------------------------------------------------------------------------
-var DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr'];
+var DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr','mudim-auto'];
 var SPELLCHECK_ID='mudim-checkspell';
 var ACCENTRULE_ID='mudim-accentrule';
 CHIM.CHAR_A = 'A';
@@ -51,6 +52,8 @@ CHIM.CHAR_Q = 'Q';
 CHIM.CHAR_q = 'q';
 CHIM.CHAR_y = 'y';
 CHIM.CHAR_Y = 'Y';
+CHIM.CHAR_i = 'i';
+CHIM.CHAR_I = 'I';
 CHIM.CHAR_0x80 = String.fromCharCode(0x80);
 //----------------------------------------------------------------------------
 CHIM.vowels = "AIUEOYaiueoy";
@@ -138,7 +141,7 @@ CHIM.Speller.Clear = function() {
 CHIM.Speller.Last = function() {
 	return CHIM.Speller.lasts[CHIM.Speller.count - 1];
 };
-my='mu';
+var my='mu';
 //----------------------------------------------------------------------------
 // Function: CHIM.Append
 //----------------------------------------------------------------------------
@@ -153,7 +156,6 @@ CHIM.Append = function(count, lastkey, key) {
 		CHIM.ClearBuffer();
 		return;
 	}
-
 	if( CHIM.Speller.enabled && !CHIM.off ) {
 		var kp = spchk.indexOf(key);
 		if ( !count ) {
@@ -173,7 +175,14 @@ CHIM.Append = function(count, lastkey, key) {
 			CHIM.off = count;
 		} else if( kp >= 0 ) { // vowels
 			if( CHIM.Speller.position < 0 ) {
-				CHIM.Speller.Set(count, key);
+				var up;
+				if ((lastkey == CHIM.CHAR_q || lastkey == CHIM.CHAR_Q) && ((up=CHIM.CharIsUI(key))<0 || up >= 24 )) {	// q must be followed by u
+					CHIM.off = 1;
+				} else if ((key == 'e' || key == 'E' || key == 'i' || key == 'I') && lastkey != 'h' && lastkey !='H'){
+					CHIM.off = 1;
+				} else {
+					CHIM.Speller.Set(count, key);
+				}
 			} else if( count - CHIM.Speller.position > 1 ) {
 				CHIM.off = count;
 			} else {
@@ -188,22 +197,26 @@ CHIM.Append = function(count, lastkey, key) {
 			switch( key ) {
 				case 'h':
 				case 'H': // [cgknpt]h
-					if( lastkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lastkey) < 0 )
+					if( lastkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lastkey) < 0 ) {
 						CHIM.off = count;
+					}
 					break;
 				case 'g':
 				case 'G': // [n]g
-					if( lastkey != 'n' && lastkey != 'N' )
+					if( lastkey != 'n' && lastkey != 'N' ) {
 						CHIM.off = count;
+					}
 					break;
 				case 'r':
 				case 'R': // [t]r
-					if( lastkey != 't' && lastkey != 'T' )
+					if( lastkey != 't' && lastkey != 'T' ) {
 						CHIM.off = count;
+					}
 					break;
 				default:
-					if( consonants.indexOf(lastkey) >= 0 )
+					if( consonants.indexOf(lastkey) >= 0 ) {
 						CHIM.off = count;
+					}
 					break;
 			}
 		}
@@ -229,7 +242,7 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
-	//console.debug('|%s| (Begin AddKey)',CHIM.buffer);
+	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 ) {
 		return CHIM.Append(0, 0, key);
 	}
@@ -257,11 +270,11 @@ CHIM.AddKey = function( key ) {
 					v = CHIM.vncode_1[k[i]];
 					Mudim.AdjustAccent(n);
 					x=b[p].charCodeAt(0);
-					if (CHIM.modes[Mudim.method-1][1].indexOf(n)==3) {			//Exception of dd, replace the first char
+					if (Mudim.GetMarkTypeID(n,1)==3) {			//Exception of dd, replace the first char
 						p=0;c=b[p];x=c.charCodeAt(0);
 					}					
 					if (Mudim.PutMark(p,x,1,v,n,true)) {
-						if (p>0 && CHIM.modes[Mudim.method-1][1].indexOf(n)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0) {
+						if (p>0 && Mudim.GetMarkTypeID(n,1)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0 && b[p+1]!=CHIM.CHAR_i && b[p+1]!=CHIM.CHAR_I) {		// uox+ when x!=i   ---> u+o+
 							 Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
 						}
 						found=true; 
@@ -289,7 +302,7 @@ CHIM.AddKey = function( key ) {
 	}
 	return p>=0;
 };
-lord='dz';
+var lord='dz';
 //----------------------------------------------------------------------------
 // Function: CHIM.BackSpace
 //	Delete the last char in internal buffer and update Speller status
@@ -297,9 +310,9 @@ lord='dz';
 CHIM.BackSpace = function() {
 	var count = CHIM.buffer.length;
 	if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
-	if( count <= 0 )
+	if( count <= 0 ) {
 		CHIM.dirty = true;
-	else {
+	} else {
 		--count;
 		CHIM.buffer.pop();
 		if( count == CHIM.Speller.position ) {
@@ -352,7 +365,7 @@ CHIM.SetDisplay = function() {
 //----------------------------------------------------------------------------
 CHIM.SwitchMethod = function() {
 	CHIM.ClearBuffer();
-	Mudim.method = (++Mudim.method & 3);
+	Mudim.method = (++Mudim.method % 5);
 	CHIM.SetDisplay();
 	Mudim.SetPreference();
 };
@@ -365,7 +378,7 @@ CHIM.SwitchMethod = function() {
 //----------------------------------------------------------------------------
 CHIM.SetMethod = function(m) {
 	CHIM.ClearBuffer();
-	Mudim.method = (m & 3);
+	Mudim.method = m;
 	CHIM.SetDisplay();
 	Mudim.SetPreference();
 };
@@ -862,7 +875,8 @@ CHIM.vncode_1=[
 CHIM.modes=[
 	[[['6',0,1,2],['7',4,5],['8',3],['9',6]],'6789','0123456'],
 	[[['a',0],['e',1],['o',2],['w',3,4,5],['d',6]],'ewoda','zsfrxj'],
-	[[['^',0,1,2],['+',4,5],['(',3],['d',6]],'^+(d',"='`?~."]
+	[[['^',0,1,2],['+',4,5],['(',3],['d',6]],'^+(d',"='`?~."],
+	[[['6',0,1,2],['7',4,5],['8',3],['9',6],['a',0],['e',1],['o',2],['w',3,4,5],['d',6],['^',0,1,2],['+',4,5],['(',3],['d',6]],'6789ewoda^+(d',"0123456zsfrxj='`?~."]
 ];
 //----------------------------------------------------------------------------
 CHIM.UI=[
@@ -946,7 +960,7 @@ Mudim.FindAccentPos = function(nKey) {
 						//something like lu'a, bu`a, .. BUT only change when deal with mark group 2 or ( of group 1
 						if ( (i-2 < 0 ||
 							(j < 24 && b[i-2] != CHIM.CHAR_q && b[i-2] != CHIM.CHAR_Q) ||
-							(j >= 24 && b[i-2] != CHIM.CHAR_g && b[i-2] != CHIM.CHAR_G) ) && (l==2 || (l==1 && m[1].indexOf(k)==1))) i--;
+							(j >= 24 && b[i-2] != CHIM.CHAR_g && b[i-2] != CHIM.CHAR_G) ) && (l==2 || (l==1 && Mudim.GetMarkTypeID(k,1)==1))) i--;
 						break;
 					case CHIM.CHAR_u:
 					case CHIM.CHAR_U:
@@ -971,10 +985,16 @@ Mudim.FindAccentPos = function(nKey) {
 						break;
 				};
 			}
+			if (i == len-2 && i-1 >= 0) {	// qux ---> put mark on x
+				var uipos=CHIM.CharIsUI(b[i]);
+				if (uipos>=0 && uipos<24 & (b[i-1]==CHIM.CHAR_q || b[i-1]==CHIM.CHAR_Q)) {
+					i++;
+				}
+			}
 			p=i;
 			break;
 	};
-	if (m[1].indexOf(k)==3 && b[0]=='d') {return 0;}
+	if (Mudim.GetMarkTypeID(k,1)==3 && b[0]=='d') {return 0;}
 	return p;
 };
 is='ot';
@@ -996,7 +1016,7 @@ Mudim.PutMark = function(pos,charCodeAtPos,group,subsTab,key,checkDouble) {
 		if (v[i]==charCodeAtPos) {
 			switch (group) {
 				case 1:
-					if (CHIM.modes[Mudim.method-1][1].indexOf(key)==1) {Mudim.w++;}
+					if (Mudim.GetMarkTypeID(key,1)==1) {Mudim.w++;}
 					if( i % 2 == 0 ) {
 						CHIM.SetCharAt( pos, v[i+1] );
 					} else {
@@ -1008,7 +1028,7 @@ Mudim.PutMark = function(pos,charCodeAtPos,group,subsTab,key,checkDouble) {
 					i=subsTab.length;
 					break;
 				case 2:
-					var j = CHIM.modes[Mudim.method-1][2].indexOf(key);
+					var j = Mudim.GetMarkTypeID(key,2);
 					if( j >= 0 ) {
 						if( j != i ) {
 							CHIM.SetCharAt( pos, v[j] );
@@ -1038,10 +1058,13 @@ Mudim.ResetAccentInfo = function() {
 // Function AdjustAccent
 //	Update accent position when it is changed
 // Return:
-//	true if successfully accent has been updated
+//	true if accent has been updated successfully
 //---------------------------------------------------------------------------
 Mudim.AdjustAccent = function(vk) {
 	//console.debug('|%s| (Begin AdjustAccent)',CHIM.buffer);
+	if (CHIM.off!=0) {
+		return false;
+	}
 	var p=Mudim.FindAccentPos(vk);
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
@@ -1075,13 +1098,41 @@ Mudim.AdjustAccent = function(vk) {
 	return false;
 };
 //----------------------------------------------------------------------------
+// Function: GetMarkTypeID
+// 	get the index in mark string of each method
+// Parameters:
+//	key: the key
+//	group: mark group (1 or 2)
+// Return:
+//	-1 if this key is not a mark key
+//	or the index in mark key string.
+// Remarks:
+//	Use global variable Mudim.method
+//	For group 1, the return value is stable only for the ones used in implementation (1 and 3)
+//----------------------------------------------------------------------------
+Mudim.GetMarkTypeID = function (key,group) {
+	var m = CHIM.modes[Mudim.method-1];
+	if (Mudim.method != 4) {
+		return m[group].indexOf(key);
+	} else {
+		var j = -1;
+		for (var i = 0; i < 4; i++) {
+			j = CHIM.modes[i][group].indexOf(key);
+			if (j>=0) {
+				return j;
+			}
+		}
+		return j;
+	}
+};
+//----------------------------------------------------------------------------
 // Function: Mudim.SetPreference()
 //----------------------------------------------------------------------------
 Mudim.SetPreference = function() {
 	var d=new Date();
 	d.setTime(d.getTime()+604800000);
 	var tail=';expire='+d.toGMTString()+';path=/';
-	var value=CHIM.Speller.enabled ? Mudim.method+4 : Mudim.method;
+	var value=CHIM.Speller.enabled ? Mudim.method+8 : Mudim.method;
 	document.cookie='|mudim-settings='+value+tail;
 };
 //----------------------------------------------------------------------------
@@ -1095,8 +1146,8 @@ Mudim.GetPreference = function() {
 		Mudim.ShowPanel();
 	} else {
 		var value=parseInt(c[i].split('=')[1],10);
-		Mudim.method = value & 3;
-		CHIM.Speller.enabled = (value & 4) ? true : false;
+		Mudim.method = value & 7;
+		CHIM.Speller.enabled = (value & 8) ? true : false;
 		Mudim.HidePanel();
 	}
 };
@@ -1122,7 +1173,7 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:#0; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method">Mudim</acronym> v0.5 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> VNI <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> Telex <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> VIQR <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[1]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[2]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[3]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[4]+'</a> (F8) ]</div>';
+		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+PANEL_BACKGROUND+'; color:'+COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method - http://code.google.com/p/mudim">Mudim</acronym> v0.6 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> '+LANG[1]+' <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> '+LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> '+LANG[3]+' <input name="mudim" id="mudim-auto" onclick="CHIM.SetMethod(4);" type="radio"> '+LANG[4]+' <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+LANG[6]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+LANG[8]+'</a> (F8) ]</div>';
 		document.body.insertBefore(f,document.body.firstChild);
 		Mudim.Panel=f;
 		Mudim.GetPreference();
@@ -1131,11 +1182,12 @@ Mudim.InitPanel = function() {
 //----------------------------------------------------------------------------
 Mudim.method = 0;
 Mudim.newAccentRule = true;
-Mudim.oldMethod = 2;
+Mudim.oldMethod = 4;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w=0;
+COLOR='Black';
 PANEL_BACKGROUND='lightYellow';
-LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+LANG=['Tắt','VNI','Telex','Viqr','Tự động','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
 IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
@@ -1146,9 +1198,11 @@ if (!window.opera && document.all) { // IE
 }
 // Change log
 
+//Changes in 0.6
+// Fix the qui't issue
+// Add AUTO method, which allows user to type in any of 3 methods
 // Fix issue 9
-// Add debug lines (Firebug is required) which will be removed in packaging script
-//Fix issue 8
+// Fix issue 8
 //SetPreference when Show/Hide Panel
 
 //Changes in 0.5

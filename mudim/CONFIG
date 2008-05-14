@@ -1,3 +1,4 @@
+COLOR='Black';
 PANEL_BACKGROUND='lightYellow';
-LANG=['Tắt','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
-IGNORE_ID = ['en_form'];
+LANG=['Tắt','VNI','Telex','Viqr','Tự động','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+IGNORE_ID = [];

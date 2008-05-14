@@ -13,7 +13,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="mudimffx.svg"
+   sodipodi:docname="solid.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
@@ -43,8 +43,8 @@
      showgrid="false"
      inkscape:window-width="1024"
      inkscape:window-height="712"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4" />
+     inkscape:window-x="0"
+     inkscape:window-y="22" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -381,5 +381,85 @@
          id="tspan4835"
          x="254.28571"
          y="809.50507">VNI</tspan></text>
+    <rect
+       style="fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:1.49769306;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2827"
+       width="478.50229"
+       height="158.5023"
+       x="52.177429"
+       y="878.82532"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="218.57146"
+       y="989.505"
+       id="text2829"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2831"
+         x="218.57146"
+         y="989.505"
+         style="font-size:100px;fill:#ffffff;fill-opacity:1">VIQR</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.46937525;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2833"
+       width="458.53061"
+       height="138.53062"
+       x="62.163269"
+       y="888.81116"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <rect
+       style="fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:0.71287692;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2835"
+       width="119.28712"
+       height="119.28712"
+       x="71.785019"
+       y="898.43286"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <rect
+       style="fill:#808000;fill-opacity:1;stroke:#000000;stroke-width:0.79241091;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2837"
+       width="309.20758"
+       height="119.20759"
+       x="201.82475"
+       y="898.47266"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <text
+       xml:space="preserve"
+       style="font-size:120px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="72.857147"
+       y="1000.9336"
+       id="text2839"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2841"
+         x="72.857147"
+         y="1000.9336">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:100px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua;-inkscape-font-specification:Book Antiqua"
+       x="208.57143"
+       y="989.505"
+       id="text2843"
+       inkscape:export-filename="C:\Documents and Settings\Hoaianh\Desktop\vni.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2845"
+         x="208.57143"
+         y="989.505">AUTO</tspan></text>
   </g>
 </svg>
