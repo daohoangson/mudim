@@ -1163,8 +1163,12 @@ Mudim.SetPreference = function() {
 	var d=new Date();
 	d.setTime(d.getTime()+604800000);
 	var tail=';expire='+d.toGMTString()+';path=/';
-	var value=CHIM.Speller.enabled ? Mudim.method+8 : Mudim.method;
+	var value = Mudim.method;
+	var value=CHIM.Speller.enabled ? value + 8 : value;
+	//value = Mudim.newAccentRule ? Mudim.method+16 : Mudim.method;
+	value = Mudim.showPanel ? value + 32 : value;
 	document.cookie='|mudim-settings='+value+tail;
+	console.debug('Cookie value written : %d',value);
 };
 //----------------------------------------------------------------------------
 // Function: Mudim.GetPreference()
@@ -1177,9 +1181,16 @@ Mudim.GetPreference = function() {
 		Mudim.ShowPanel();
 	} else {
 		var value=parseInt(c[i].split('=')[1],10);
+		console.debug('Cookie value read : %d',value);
 		Mudim.method = value & 7;
 		CHIM.Speller.enabled = (value & 8) ? true : false;
-		Mudim.HidePanel();
+		CHIM.newAccentRule = (value & 16) ? true : false;
+		Mudim.showPanel = (value & 32) ? true : false;
+		if (Mudim.showPanel) {
+			Mudim.ShowPanel();
+		} else {
+			Mudim.HidePanel();
+		}
 	}
 };
 //----------------------------------------------------------------------------
@@ -1192,14 +1203,19 @@ Mudim.ToggleAccentRule = function() {
 // Function: Mudim.TogglePanel()
 //----------------------------------------------------------------------------
 Mudim.TogglePanel = function() {
+	Mudim.showPanel = !Mudim.showPanel;
 	Mudim.Panel.style.display = (Mudim.Panel.style.display=='')? 'None' : '';
 	Mudim.SetPreference();
 };
 Mudim.ShowPanel = function() {
+	Mudim.showPanel = true;
 	Mudim.Panel.style.display = '';
+	Mudim.SetPreference();
 };
 Mudim.HidePanel = function() {
+	Mudim.showPanel = false;
 	Mudim.Panel.style.display = 'None';
+	Mudim.SetPreference();
 };
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
@@ -1214,6 +1230,7 @@ Mudim.InitPanel = function() {
 Mudim.method = 0;
 Mudim.newAccentRule = true;
 Mudim.oldMethod = 4;
+Mudim.showPanel = true;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w=0;
 COLOR='Black';
