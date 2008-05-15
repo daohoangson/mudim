@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import shutil
 import packer
 from zipfile import *
 
@@ -14,8 +15,9 @@ def makeMudimJs():
                 if debugpat.search(line)==None:
                         script = script + line
         result=p.pack(script, compaction=True, encoding=62, fastDecode=True)
+        shutil.copy('mudim'+sep+'BOM','mudim'+sep+'mudim.js')
         copyr=open('mudim'+sep+'COPYRIGHT','r')
-        mudjs=open('mudim'+sep+'mudim.js','w')
+        mudjs=open('mudim'+sep+'mudim.js','a')
         for line in copyr:
                 mudjs.write(line)
         mudjs.write('\n')
