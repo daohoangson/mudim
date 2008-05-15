@@ -242,7 +242,7 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
-	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
+	//console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 ) {
 		return CHIM.Append(0, 0, key);
 	}
