@@ -149,7 +149,7 @@ CHIM.Append = function(count, lastkey, key) {
 	//console.debug('|%s| (Begin Append)',CHIM.buffer);
 	var consonants = "BCDFGHJKLMNPQRSTVWXZbcdfghjklmnpqrstvwxz";
 	var spchk = "AIUEOYaiueoy|BDFJKLQSVWXZbdfjklqsvwxz|'`~?.^*+=";
-	var vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|";
+	var vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|yu|";
 	var nvchk = "FfJjWwZz";
 	var separators = "!@#$%^&*()_+=-{}[]|\\:\";'<>?,./~`";
 	if ( separators.indexOf(key) >= 0 ) {
@@ -1069,9 +1069,20 @@ Mudim.AdjustAccent = function(vk) {
 	var p=Mudim.FindAccentPos(vk);
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
-	var v,i,j;
+	var v,i,j,c;
+	if (p<0) { return false;}
+	i = CHIM.vn_OW.length-1;
+	c = b[p].charCodeAt(0);
+	while (i>=0 && CHIM.vn_OW[i]!=c) {i--;}
+	j = CHIM.vn_UW.length-1;
+	if (p>0) {
+		c=b[p-1].charCodeAt(0);
+		while (j>=0 && CHIM.vn_OW[j]!=c) {j--;}
+	} else {
+		j=-1;
+	}
 	//uo
-	if (p<b.length-1 && p>0 && (i=CHIM.vn_OW.indexOf(b[p].charCodeAt(0)))>=0 && CHIM.vn_UW.indexOf(b[p-1].charCodeAt(0))>=0) {
+	if (p<b.length-1 && p>0 && i>=0 && j>=0) {
 		if (Mudim.w==1) {
 			if (i%2==0) {	//u+o
 				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);	//u+ o+
