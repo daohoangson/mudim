@@ -4,12 +4,12 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>mudim@svol.ru</em:id>
 		<em:name>Mudim</em:name>
-		<em:version>0.6.31</em:version>
+		<em:version>0.6.41</em:version>
 		<em:description>Vietnamese input method</em:description>
 		<em:creator>Mudzot</em:creator>
 		<em:contributor>MrChuoi</em:contributor>
 		<em:contributor>Vnpenguin</em:contributor>
-		<em:homepageURL>http://code.google.com/p/mudim/</em:homepageURL>
+		<em:homepageURL>http://mudim.googlecode.com</em:homepageURL>
 		<em:file>
 			<Description about="urn:mozilla:extension:file:chim.jar">
 			<em:package>content/</em:package>

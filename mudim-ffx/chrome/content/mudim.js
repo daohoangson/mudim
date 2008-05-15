@@ -136,15 +136,13 @@ var my='mu';
 CHIM.Append = function(count, lastkey, key) {
 	var consonants = "BCDFGHJKLMNPQRSTVWXZbcdfghjklmnpqrstvwxz";
 	var spchk = "AIUEOYaiueoy|BDFJKLQSVWXZbdfjklqsvwxz|'`~?.^*+=";
-	var vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|";
+	var vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|yu|";
 	var nvchk = "FfJjWwZz";
-
 	var separators = "!@#$%^&*()_+=-{}[]|\\:\";'<>?,./~`";
 	if ( separators.indexOf(key) >= 0 ) {
 		CHIM.ClearBuffer();
 		return;
 	}
-
 	if( CHIM.Speller.enabled && !CHIM.off ) {
 		var kp = spchk.indexOf(key);
 		if ( !count ) {
@@ -167,8 +165,13 @@ CHIM.Append = function(count, lastkey, key) {
 				var up;
 				if ((lastkey == CHIM.CHAR_q || lastkey == CHIM.CHAR_Q) && ((up=CHIM.CharIsUI(key))<0 || up >= 24 )) {	// q must be followed by u
 					CHIM.off = 1;
-				} else if ((key == 'e' || key == 'E' || key == 'i' || key == 'I') && lastkey != 'h' && lastkey !='H'){
-					CHIM.off = 1;
+				} else if (key=='e' || key=='i' || key=='E' || key=='I') {
+					if (CHIM.buffer.length>1 && (lastkey=='g' || lastkey=='G')) {
+						CHIM.off=1;
+					}
+					if (lastkey=='c' || lastkey=='C') {
+						CHIM.off=1;
+					}
 				} else {
 					CHIM.Speller.Set(count, key);
 				}
@@ -211,7 +214,8 @@ CHIM.Append = function(count, lastkey, key) {
 		}
 	}
 	CHIM.buffer.push(key);
-	return Mudim.AdjustAccent(CHIM.modes[Mudim.method-1][2][0]);
+	var s=['1','s',"'",'s'];	//for stupid IE
+	return Mudim.AdjustAccent(s[Mudim.method-1]);
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.AddKey
@@ -231,11 +235,9 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
-	
 	if( !count || CHIM.off != 0 ) {
 		return CHIM.Append(0, 0, key);
 	}
-
 	b = CHIM.buffer;
 	c = b[p = count - 1];
 	n = key.toLowerCase();
@@ -265,7 +267,7 @@ CHIM.AddKey = function( key ) {
 					}					
 					if (Mudim.PutMark(p,x,1,v,n,true)) {
 						if (p>0 && Mudim.GetMarkTypeID(n,1)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0 && b[p+1]!=CHIM.CHAR_i && b[p+1]!=CHIM.CHAR_I) {		// uox+ when x!=i   ---> u+o+
-							 Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
+							Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
 						}
 						found=true; 
 						break;
@@ -846,7 +848,7 @@ Mudim = function() {
 //----------------------------------------------------------------------------
 Mudim.method = 0;
 Mudim.newAccentRule = true;
-Mudim.oldMethod = 2;
+Mudim.oldMethod = 4;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w=0;
 Mudim.skinIdx=0;
@@ -930,7 +932,7 @@ Mudim.FindAccentPos = function(nKey) {
 	p=len-1;	
 	switch (l=i) {
 		case 1:
-			if (m[1].indexOf(k)==3)	{break;}		// d in telex
+			if (Mudim.GetMarkTypeID(k,1)==3)	{break;}		// d in telex
 		case 2:
 		default:
 			i=p;
@@ -1046,12 +1048,26 @@ Mudim.ResetAccentInfo = function() {
 //	true if successfully accent has been updated
 //---------------------------------------------------------------------------
 Mudim.AdjustAccent = function(vk) {
+	if (CHIM.off!=0) {
+		return false;
+	}
 	var p=Mudim.FindAccentPos(vk);
 	var a = Mudim.accent;	
 	var b=CHIM.buffer;
-	var v,i,j;
+	var v,i,j,c;
+	if (p<0) { return false;}
+	i = CHIM.vn_OW.length-1;
+	c = b[p].charCodeAt(0);
+	while (i>=0 && CHIM.vn_OW[i]!=c) {i--;}
+	j = CHIM.vn_UW.length-1;
+	if (p>0) {
+		c=b[p-1].charCodeAt(0);
+		while (j>=0 && CHIM.vn_UW[j]!=c) {j--;}
+	} else {
+		j=-1;
+	}
 	//uo
-	if (p<b.length-1 && p>0 && (i=CHIM.vn_OW.indexOf(b[p].charCodeAt(0)))>=0 && CHIM.vn_UW.indexOf(b[p-1].charCodeAt(0))>=0) {
+	if (p<b.length-1 && p>0 && i>=0 && j>=0) {
 		if (Mudim.w==1) {
 			if (i%2==0) {	//u+o
 				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1][1],false);	//u+ o+
@@ -1077,9 +1093,6 @@ Mudim.AdjustAccent = function(vk) {
 		return true;
 	}
 	return false;
-}
-Mudim.ToggleAccentRule = function() {
-	Mudim.newAccentRule = !Mudim.newAccentRule;
 };
 //----------------------------------------------------------------------------
 // Function: GetMarkTypeID
