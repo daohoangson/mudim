@@ -222,7 +222,8 @@ CHIM.Append = function(count, lastkey, key) {
 		}
 	}
 	CHIM.buffer.push(key);
-	return Mudim.AdjustAccent(CHIM.modes[Mudim.method-1][2][0]);
+	var s=['1','s',"'",'s'];	//for stupid IE
+	return Mudim.AdjustAccent(s[Mudim.method-1]);
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.AddKey
