@@ -328,7 +328,7 @@ CHIM.AddKey = function( key ) {
 					}					
 					if (Mudim.PutMark(p,x,1,v,n,true)) {
 						console.debug('Successfully put mark of group 1');
-						if (p>0 && Mudim.GetMarkTypeID(n,1)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0 && b[p+1]!=CHIM.CHAR_i && b[p+1]!=CHIM.CHAR_I) {		// uox+ when x!=i   ---> u+o+
+						if (p>0 && Mudim.GetMarkTypeID(n,1)==1 && p<count-1 && CHIM.CharIsO(b[p])>=0 && CHIM.CharIsUI(b[p-1])>=0 && b[0]!=CHIM.CHAR_q && b[0]!=CHIM.CHAR_Q) {		// uox+ when x!=i   ---> u+o+
 							console.debug('uoxw when x!=i : put additional + on u');
 							Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,n,false);
 						}
@@ -1151,6 +1151,7 @@ Mudim.AdjustAccent = function(vk) {
 			if (i%2==0) {	//u+o
 				Mudim.PutMark(p,b[p].charCodeAt(0),1,CHIM.vn_OW,CHIM.modes[Mudim.method-1][1].charAt(1),false);	//u+ o+
 				if (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) {	//if word starts with 'q' then change to uo+
+					console.debug('Change to quo+');
 					Mudim.PutMark(p-1,b[p-1].charCodeAt(0),1,CHIM.vn_UW,CHIM.modes[Mudim.method-1][1].charAt(1),false);
 				}
 			} else {	//uo+
