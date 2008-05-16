@@ -1267,11 +1267,23 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method - http://mudim.googlecode.com">Mudim</acronym> v0.6 : <input name="mudim" id="mudim-off" onclick="CHIM.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="CHIM.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="CHIM.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="CHIM.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="CHIM.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:CHIM.Speller.Toggle();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="CHIM.Toggle()">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+Mudim.LANG[8]+'</a> (F8) ]</div>';
+		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><acronym title="Mudzot\'s Input Method - http://mudim.googlecode.com">Mudim</acronym> v0.6 : <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle()">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel()">'+Mudim.LANG[8]+'</a> (F8) ]</div>';
 		document.body.insertBefore(f,document.body.firstChild);
 		Mudim.Panel=f;
 		Mudim.GetPreference();
 	}
+};
+Mudim.ToggleSpeller = function() {
+	CHIM.Speller.Toggle();
+};
+Mudim.Toggle = function() {
+	CHIM.Toggle();
+};
+Mudim.SetMethod = function(m) {
+	CHIM.SetMethod(m);
+};
+Mudim.SwitchMethod = function() {
+	CHIM.SwitchMethod();
 };
 //----------------------------------------------------------------------------
 Mudim.method = 4;
