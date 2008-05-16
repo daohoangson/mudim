@@ -1257,10 +1257,12 @@ Mudim.TogglePanel = function() {
 Mudim.ShowPanel = function() {
 	Mudim.showPanel = true;
 	Mudim.Panel.style.display = '';
+	Mudim.SetPreference();
 };
 Mudim.HidePanel = function() {
 	Mudim.showPanel = false;
 	Mudim.Panel.style.display = 'None';
+	Mudim.SetPreference();
 };
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
