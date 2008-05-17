@@ -152,14 +152,13 @@ CHIM.Speller.Last = function() {
 //	count: current buffer length
 //	lastkey: last key in buffer
 //	key: current key
-//	adjustAccent: the need of adjusting accent
 //----------------------------------------------------------------------------
 Mudim.consonants = "BCDFGHJKLMNPQRSTVWXZbcdfghjklmnpqrstvwxz";
 Mudim.spchk = "AIUEOYaiueoy|BDFJKLQSVWXZbdfjklqsvwxz|'`~?.^*+=";
 Mudim.vwchk = "|ia|ua|oa|ai|ui|oi|au|iu|eu|ie|ue|oe|ye|ao|uo|eo|ay|uy|uu|ou|io|yu|";
 Mudim.nvchk = "FfJjWwZz";
 Mudim.separators = "!@#$%^&*()_+=-{}[]|\\:\";'<>?,./~`";
-CHIM.Append = function(count, lastkey, key, adjustAccent) {
+CHIM.Append = function(count, lastkey, key) {
 	console.debug('|%s| (Begin Append)',CHIM.buffer);
 	if ( Mudim.separators.indexOf(key) >= 0 ) {
 		CHIM.ClearBuffer();
@@ -240,11 +239,7 @@ CHIM.Append = function(count, lastkey, key, adjustAccent) {
 		}
 	}
 	CHIM.buffer.push(key);
-	if (adjustAccent) {
-		return Mudim.AdjustAccent(CHIM.modes[Mudim.method-1][2].charAt(0));
-	} else {
-		return true;
-	}
+	return Mudim.AdjustAccent(CHIM.modes[Mudim.method-1][2].charAt(0));
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.AddKey
@@ -269,7 +264,7 @@ CHIM.AddKey = function( key ) {
 	var v = null;
 	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 ) {
-		return CHIM.Append(0, 0, key, true);
+		return CHIM.Append(0, 0, key);
 	}
 	b = CHIM.buffer;
 	c = b[p = count - 1];
@@ -278,11 +273,11 @@ CHIM.AddKey = function( key ) {
 		if( m[l].indexOf(n) >= 0 ) {break;}
 	if( l >= m.length ) {
 		console.debug('Not mark key, just append to buffer');
-		return CHIM.Append(count, c, key, true);
+		return CHIM.Append(count, c, key);
 	}
 	if ((p=Mudim.FindAccentPos(n))<0) {
 		console.debug('Appropriate accent position not found, just append');
-		return CHIM.Append(count, c, key, false);
+		return CHIM.Append(count, c, key);
 	}
 	console.debug('Found mark position: %d',p);
 	
@@ -292,21 +287,21 @@ CHIM.AddKey = function( key ) {
 			CHIM.off = count;
 			Mudim.endConsonants='';
 			console.debug('End consonants not in pattern, just append');
-			return CHIM.Append(count, c, key, false);
+			return CHIM.Append(count, c, key);
 		} else if (ecIdx<9 && l==2) {
 			var typeid = Mudim.GetMarkTypeID(n,2);
 			if (typeid !=0 && typeid!=1 && typeid!=5) {
 				CHIM.off = count;
 				Mudim.endConsonants='';
 				console.debug('End consonants not in pattern, just append');
-				return CHIM.Append(count, c, key, false);
+				return CHIM.Append(count, c, key);
 			}
 		}
 	}
 	Mudim.lord='dz';
 	if (count == 2 && (b[1]==CHIM.CHAR_u || b[1]==CHIM.CHAR_U) && (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) && (l==2 || (l==1 && Mudim.GetMarkTypeID(n,1)==1))) {	//spelling rule as described in Issue #16 comment #0
 		CHIM.off = count;
-		return CHIM.Append(count, c, key, false);
+		return CHIM.Append(count, c, key);
 	}
 	c=b[p];
 	var x = c.charCodeAt(0);
@@ -353,7 +348,7 @@ CHIM.AddKey = function( key ) {
 	}
 	if( !found ) {
 		console.debug('Mark isnt compatible with this position');
-		return CHIM.Append(count, c, key, true);
+		return CHIM.Append(count, c, key);
 	}
 	if (CHIM.off!=0) {
 		console.debug('Push the key into buffer due to double mark');
