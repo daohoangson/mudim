@@ -386,6 +386,7 @@ CHIM.ClearBuffer = function() {
 	CHIM.buffer = [];
 	CHIM.Speller.Clear();
 	Mudim.ResetAccentInfo();
+	Mudim.endConsonants='';
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -683,6 +684,9 @@ CHIM.HTMLEditor.GetCurrentWord = function(target) {
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.Process = function(target, l) {
 	var range = CHIM.HTMLEditor.GetRange(target);
+	if (typeof(range)=='undefined') {
+		return;
+	}
 	var b = CHIM.buffer;
 	if (!window.opera && document.all) {
 		var x = -l;
@@ -1189,7 +1193,7 @@ Mudim.GetMarkTypeID = function (key,group) {
 		return m[group].indexOf(key);
 	} else {
 		var j = -1;
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 3; i++) {
 			j = CHIM.modes[i][group].indexOf(key);
 			if (j>=0) {
 				return j;
@@ -1290,7 +1294,7 @@ Mudim.w = 0;
 Mudim.endConsonants='';
 Mudim.COLOR='Black';
 Mudim.PANEL_BACKGROUND='lightYellow';
-Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tự động','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
 Mudim.IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
@@ -1303,13 +1307,18 @@ if (!window.opera && document.all) { // IE
 
 // Change log
 
-//Changes in 0.6
-// Save accent rule setting
+// Changes in 0.7
+// Fix issue #19 : some word cannot put accent on due to  new spell checking rule
+// Fix issue #20 about error in console when there's no text target
+// Remove Viqr from method Auto
+// Save accent rule setting, and show/hide panel setting
 // Add spelling rule as described in Issue #16 comment #0 and comment #1
 // Take frequently used array from Append, make them global
 // Forbid ng[ie], c[ie] and q[^u]
 // Fix the qui't issue
 // Fix the appear-again khuyur issue as magically as when it disappeared
+
+//Changes in 0.6
 // Add AUTO method, which allows user to type in any of 3 methods
 // Fix issue 9
 // Fix issue 8
