@@ -1206,8 +1206,8 @@ Mudim.SetPreference = function() {
 	d.setTime(d.getTime()+604800000);
 	var tail=';expire='+d.toGMTString()+';path=/';
 	var value = Mudim.method;
-	var value=CHIM.Speller.enabled ? value + 8 : value;
-	value = Mudim.newAccentRule ? Mudim.method+16 : Mudim.method;
+	var value= CHIM.Speller.enabled ? value + 8 : value;
+	value = Mudim.newAccentRule ? value + 16 : value;
 	value = Mudim.showPanel ? value + 32 : value;
 	document.cookie='|mudim-settings='+value+tail;
 	console.debug('Cookie value written : %d',value);
