@@ -75,7 +75,7 @@ def makeMudimFfx():
                 zf.write(fentry[0],fentry[1])
         zf.close()
         #create mudim.xpi
-        zf=ZipFile('mudim.xpi','w',ZIP_DEFLATED)
+        zf=ZipFile('mudim-ffx'+sep+'mudim.xpi','w',ZIP_DEFLATED)
         zf.write('mudim-ffx'+sep+'install.rdf',sep+'install.rdf')
         zf.write('mudim-ffx'+sep+'chrome.manifest',sep+'chrome.manifest')
         zf.write('mudim.jar',sep+'chrome'+sep+'mudim.jar')
