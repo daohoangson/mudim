@@ -1284,6 +1284,10 @@ Mudim.SetMethod = function(m) {
 Mudim.SwitchMethod = function() {
 	CHIM.SwitchMethod();
 };
+Mudim.Init = function() {
+	CHIM.Activate();
+	window.setTimeout('CHIM.Activate()',2000);	// Wait 2 sec to catch all text elements that have been created during the Load event.
+};
 //----------------------------------------------------------------------------
 Mudim.method = 4;
 Mudim.newAccentRule = true;
@@ -1299,9 +1303,9 @@ Mudim.IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
 if (!window.opera && document.all) { // IE
-	window.attachEvent("onload",CHIM.Activate);
+	window.attachEvent("onload",Mudim.Init);
 } else {
-	window.addEventListener("load",CHIM.Activate,false);
+	window.addEventListener("load",Mudim.Init,false);
 }
 
 
