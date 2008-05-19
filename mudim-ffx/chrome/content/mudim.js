@@ -565,6 +565,7 @@ CHIM.HTMLEditor = function() {
 // Function: CHIM.HTMLEditor.GetRange
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.GetRange = function(target) {
+	if (!target.parentNode.iframe) {return;}
 	var win = target.parentNode.iframe.contentWindow;
 	return (!window.opera && document.all) ?
 			win.document.selection.createRange() :
@@ -575,6 +576,7 @@ CHIM.HTMLEditor.GetRange = function(target) {
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.GetCurrentWord = function(target) {
 	var range = CHIM.HTMLEditor.GetRange(target);
+	if (!range) {return '';}
 	if (!window.opera && document.all) {
 		while (range.moveStart('character', -1) == -1) {
 			if (CHIM.separators.indexOf(range.text.charAt(0)) >= 0) {
@@ -602,6 +604,9 @@ CHIM.HTMLEditor.GetCurrentWord = function(target) {
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.Process = function(target, l) {
 	var range = CHIM.HTMLEditor.GetRange(target);
+	if (typeof(range)=='undefined') {
+		return;
+	}
 	var b = CHIM.buffer;
 	if (!window.opera && document.all) {
 		var x = -l;
@@ -665,6 +670,9 @@ CHIM.KeyHandler = function(e) {
 				CHIM.UpdateBuffer( target );
 			}
 			var l = CHIM.buffer.length;
+			if (l==0) {
+				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
+			}
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
 				if (e.preventDefault) {e.preventDefault();}
@@ -883,6 +891,7 @@ Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w=0;
 Mudim.endConsonants='';
 Mudim.skinIdx=0;
+Mudim.startWordOffset=0;
 //----------------------------------------------------------------------------
 
 Mudim.StatusBarClicked = function(e) {
@@ -935,15 +944,13 @@ Mudim.UpdateUI = function(target,l) {
 		if (l < CHIM.buffer.length) {return;}
 		return false;
 	}
-	var c = CHIM.GetCursorPosition( target ) - 1;
-	if ( c >= 0 ) {
-		var t = target.scrollTop;
-		var r = c - l + 1;
-		target.value = target.value.substring( 0, r ) +
-			b.toString().replace(/,/g,'') + target.value.substring( r + l );
-		CHIM.SetCursorPosition( target, c + (l<b.length ? 2 : 1) );
-		target.scrollTop = t;
-	}
+	var start = Mudim.startWordOffset < 0 ? 0 : Mudim.startWordOffset;
+	var end = CHIM.GetCursorPosition(target);
+	var t = target.scrollTop;
+	target.value = target.value.substring( 0, start ) +
+		b.toString().replace(/,/g,'') + target.value.substring( end );
+	CHIM.SetCursorPosition( target, start + b.length);
+	target.scrollTop = t;
 };
 //---------------------------------------------------------------------------
 // Function FindAccentPos
