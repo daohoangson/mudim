@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<product productid="mudim" active="1">
+	<title>Mudim Vietnamese Input Method</title>
+	<description>Mudim allows users to type Vietnamese language</description>
+	<version>0.7</version>
+	<codes>
+	</codes>
+	<templates>
+		<template name="mudim_include" templatetype="template" date="1211302556" username="Mudzot" version="0.7">
+		<![CDATA[
+			<script src="clientscript/mudim.js"></script>
+		]]>
+		</template>		
+	</templates>
+	<plugins>
+		<plugin active="1">
+			<title>Mudim</title>
+			<hookname>cache_templates</hookname>
+			<phpcode>
+			<![CDATA[
+			$globaltemplates  = array_merge($globaltemplates, array('mudim_include'));
+			]]>
+			</phpcode>
+		</plugin>
+		<plugin active="1">
+			<title>Mudim</title>
+			<hookname>global_start</hookname>
+			<phpcode>
+			<![CDATA[
+			$vbulletin->templatecache['headinclude'] = fetch_template('mudim_include').$vbulletin->templatecache['headinclude'];
+			]]>
+			</phpcode>
+		</plugin>
+	</plugins>
+</product>

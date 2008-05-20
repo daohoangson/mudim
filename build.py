@@ -88,6 +88,14 @@ def makeMudimWpp():
         for fn in mudWwpFileList:
                 zf.write(fn[0],fn[1])
         zf.close()
+
+def makeMudimVbb():
+        mudWwpFileList=[['mudim-vbb'+sep+'product-mudim.xml',sep+'product-mudim.xml'],\
+                         ['mudim'+sep+'mudim.js',sep+'mudim.js']]
+        zf = ZipFile('mudim-vbb'+sep+'mudim-vbb.zip','w',ZIP_DEFLATED)
+        for fn in mudWwpFileList:
+                zf.write(fn[0],fn[1])
+        zf.close()
         
 def printUsage():
 	print '''
@@ -97,8 +105,9 @@ Usage:
         Available target value:
                 js: make mudim.js
                 zip: make mudim.zip
-                ffx: make mudim.xpi
-                wwp: make mudim-wwp.zip
+                ffx: make firefox extension mudim.xpi
+                wwp: make wordpress plugin mudim-wwp.zip
+                vbb: make vbulletin plugin mudim-vbb.zip
                 all: make all
 	'''
 if __name__=='__main__':
@@ -113,11 +122,14 @@ if __name__=='__main__':
 				makeMudimFfx()
 			elif func=='wpp':
                                 makeMudimWpp()
+                        elif func=='vbb':
+                                makeMudimVbb()
 			elif func=='all':
 			    makeMudimJs()
 			    makeMudimZip()
 			    makeMudimFfx()
 			    makeMudimWwp()
+			    makeMudimVbb()
 			else:
 				printUsage()				
 	else:
