@@ -14,7 +14,7 @@ function include_js() {
 function include_js_admin() {
 	echo '<script src="../wp-content/plugins/mudim/mudim.js"></script>';
 }
-add_action('admin_footer', 'include_js_admin');
-add_action('wp_footer', 'include_js');
+add_action('admin_head', 'include_js_admin');
+add_action('wp_head', 'include_js');
 
 ?>
