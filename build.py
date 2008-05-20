@@ -34,7 +34,6 @@ def makeMudimZip():
                 'mudim'+sep+'test_init.js',\
                 'mudim'+sep+'mudim.js']
         zf = ZipFile('mudim.zip','w',ZIP_DEFLATED)
-        fnl = mudzipNameList
         for fn in mudzipNameList:
                 zf.write(fn,sep+fn)
         zf.close()
@@ -81,6 +80,15 @@ def makeMudimFfx():
         zf.write('mudim.jar',sep+'chrome'+sep+'mudim.jar')
         zf.close()
         os.remove('mudim.jar')
+        
+def makeMudimWwp():
+        mudWwpFileList=[['mudim-wwp'+sep+'mudim.php',sep+'mudim'+sep+'mudim.php'],\
+                         ['mudim'+sep+'mudim.js',sep+'mudim'+sep+'mudim.js']]
+        zf = ZipFile('mudim-wwp'+sep+'mudim-wwp.zip','w',ZIP_DEFLATED)
+        for fn in mudWwpFileList:
+                zf.write(fn[0],fn[1])
+        zf.close()
+        
 def printUsage():
 	print '''
 Usage: 
@@ -90,6 +98,7 @@ Usage:
                 js: make mudim.js
                 zip: make mudim.zip
                 ffx: make mudim.xpi
+                wwp: make mudim-wwp.zip
                 all: make all
 	'''
 if __name__=='__main__':
@@ -102,10 +111,13 @@ if __name__=='__main__':
 				makeMudimZip()
 			elif func=='ffx':
 				makeMudimFfx()
+			elif func=='wwp':
+                                makeMudimWwp()
 			elif func=='all':
 			    makeMudimJs()
 			    makeMudimZip()
 			    makeMudimFfx()
+			    makeMudimWwp()
 			else:
 				printUsage()				
 	else:
