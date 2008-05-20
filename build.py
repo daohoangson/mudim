@@ -81,10 +81,10 @@ def makeMudimFfx():
         zf.close()
         os.remove('mudim.jar')
         
-def makeMudimWwp():
-        mudWwpFileList=[['mudim-wwp'+sep+'mudim.php',sep+'mudim'+sep+'mudim.php'],\
+def makeMudimWpp():
+        mudWwpFileList=[['mudim-wpp'+sep+'mudim.php',sep+'mudim'+sep+'mudim.php'],\
                          ['mudim'+sep+'mudim.js',sep+'mudim'+sep+'mudim.js']]
-        zf = ZipFile('mudim-wwp'+sep+'mudim-wwp.zip','w',ZIP_DEFLATED)
+        zf = ZipFile('mudim-wpp'+sep+'mudim-wpp.zip','w',ZIP_DEFLATED)
         for fn in mudWwpFileList:
                 zf.write(fn[0],fn[1])
         zf.close()
@@ -111,8 +111,8 @@ if __name__=='__main__':
 				makeMudimZip()
 			elif func=='ffx':
 				makeMudimFfx()
-			elif func=='wwp':
-                                makeMudimWwp()
+			elif func=='wpp':
+                                makeMudimWpp()
 			elif func=='all':
 			    makeMudimJs()
 			    makeMudimZip()
