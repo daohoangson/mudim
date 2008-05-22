@@ -128,7 +128,7 @@ if __name__=='__main__':
 			    makeMudimJs()
 			    makeMudimZip()
 			    makeMudimFfx()
-			    makeMudimWwp()
+			    makeMudimWpp()
 			    makeMudimVbb()
 			else:
 				printUsage()				
