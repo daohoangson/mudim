@@ -146,7 +146,6 @@ Mudim.tailConsonantsPattern = '|c|ch|p|t|m|n|ng|nh|';
 Mudim.CheckSpell = function(key, grp) {
 	var b = CHIM.buffer;
 	var len = b.length;
-	var lkey = b[len-1].toLowerCase();
 	var n = key.toLowerCase();
 	// Rule based on the ending consonants
 	if (grp > 0 && CHIM.off == 0) {
