@@ -172,6 +172,9 @@ Mudim.CheckSpell = function(key, grp) {
 		}
 	} else if( !CHIM.off ) {
 		var kp = Mudim.spchk.indexOf(key);
+		if (len>0) {
+			var lkey = b[len-1].toLowerCase();
+		}
 		if ( len==0 ) {
 			if ( Mudim.nvchk.indexOf(key) >= 0 ) {
 				CHIM.off = -1;
@@ -274,6 +277,9 @@ CHIM.AddKey = function( key ) {
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
 	if( !count || CHIM.off != 0 ) {
+		if (CHIM.Speller.enabled) {
+			Mudim.CheckSpell(key,0);
+		}
 		return CHIM.Append(0, 0, key);
 	}
 	b = CHIM.buffer;

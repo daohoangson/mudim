@@ -161,7 +161,6 @@ Mudim.tailConsonantsPattern = '|c|ch|p|t|m|n|ng|nh|';
 Mudim.CheckSpell = function(key, grp) {
 	var b = CHIM.buffer;
 	var len = b.length;
-	var lkey = b[len-1].toLowerCase();
 	var n = key.toLowerCase();
 	console.debug('Begin CheckSpell');
 	// Rule based on the ending consonants
@@ -190,6 +189,9 @@ Mudim.CheckSpell = function(key, grp) {
 		}
 	} else if( !CHIM.off ) {
 		var kp = Mudim.spchk.indexOf(key);
+		if (len>0) {
+			var lkey = b[len-1].toLowerCase();
+		}
 		if ( len==0 ) {
 			console.debug('Buffer empty');
 			if ( Mudim.nvchk.indexOf(key) >= 0 ) {
@@ -323,6 +325,9 @@ CHIM.AddKey = function( key ) {
 	var v = null;
 	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 ) {
+		if (Mudim.CheckSpell(key,l)) {
+			return CHIM.Append(count, c, key);
+		}
 		return CHIM.Append(0, 0, key);
 	}
 	b = CHIM.buffer;
