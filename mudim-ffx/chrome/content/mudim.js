@@ -134,9 +134,6 @@ CHIM.Speller.Clear = function() {
 CHIM.Speller.Last = function() {
 	return CHIM.Speller.lasts[CHIM.Speller.count - 1];
 };
-//----------------------------------------------------------------------------
-// Function: CHIM.Append
-//----------------------------------------------------------------------------
 Mudim.consonants = "BCDFGHJKLMNPQRSTVWXZbcdfghjklmnpqrstvwxz";
 Mudim.spchk = "AIUEOYaiueoy|BDFJKLQSVWXZbdfjklqsvwxz|'`~?.^*+=";
 Mudim.vwchk = "|oa|uy|ue|oe|ou|ye|ua|uo|ai|ui|oi|au|iu|ia|eu|ie|ao|eo|ay|uu|io|yu|";
@@ -169,7 +166,7 @@ Mudim.CheckSpell = function(key, grp) {
 			CHIM.off = len;
 			return CHIM.Append(len, c, key);
 		}
-	} else if( !CHIM.off ) {
+	} else if ( !CHIM.off ) {
 		var kp = Mudim.spchk.indexOf(key);
 		if (len>0) {
 			var lkey = b[len-1].toLowerCase();
@@ -197,37 +194,47 @@ Mudim.CheckSpell = function(key, grp) {
 			if (i>0) {
 				Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
 			}
-			if( CHIM.Speller.position < 0 ) {
-				if (lkey == 'q' && n!='u') {	// q must be followed by u
-					CHIM.off = len;
+			if ( CHIM.Speller.position < 0 ) {
+				if (Mudim.headConsonants == 'q') {	// q must be followed by u
+					if (len==1 && n!='u') {
+						CHIM.off = len;
+					} else if (b[1] == 'u' && n == 'u') {
+						CHIM.off = len;
+					}
 				} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
 					CHIM.off = len;
 				} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
 					CHIM.off = len;
-				} else if (n == 'y') {
-					if ('hklms'.indexOf(lkey) < 0) {
-						CHIM.off = len;
-					}
-				} else if (n=='e' || n=='i') {
-					if (len>1 && (lkey=='g')) {
-						CHIM.off=len;
-					}
-					if (lkey=='c') {
-						CHIM.off=1;
-					}
+				} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
+					CHIM.off = len;
 				} else {
 					CHIM.Speller.Set(len, key);
+					if (n == 'y') {
+						if ('hklms'.indexOf(lkey) < 0) {
+							CHIM.off = len;
+						}
+					} else if (n=='e' || n=='i') {
+						if (len>1 && (lkey=='g')) {
+							CHIM.off=len;
+						}
+						if (lkey=='c') {
+							CHIM.off=1;
+						}
+					}
 				}
 			} else if( len - CHIM.Speller.position > 1 ) {
 				CHIM.off = len;
 			} else {
 				var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
 				var idx = Mudim.vwchk.indexOf(w);
-				if ( idx < 0 || (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C'))) {
-					
+				if ( idx < 0 ) {
+					CHIM.off = len;
+				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
+					CHIM.off = len;
+				} else if (lkey == 'y' && Mudim.headConsonants == '') {
 					CHIM.off = len;
 				} else {
-					CHIM.Speller.Set(len, key);
+					CHIM.Speller.Set(len,key);
 				}
 			}
 		} else {		// special cases
@@ -258,7 +265,13 @@ Mudim.CheckSpell = function(key, grp) {
 			}
 		}
 	}
+	if (CHIM.off != 0) {
+		return true;
+	}
 };
+//----------------------------------------------------------------------------
+// Function: CHIM.Append
+//----------------------------------------------------------------------------
 CHIM.Append = function(count, lastkey, key) {
 	if ( Mudim.separators.indexOf(key) >= 0 ) {
 		CHIM.ClearBuffer();
@@ -1184,6 +1197,9 @@ Mudim.GetMarkTypeID = function (key,group) {
 		}
 		return j;
 	}
+};
+Mudim.ToggleAccentRule = function() {
+	Mudim.newAccentRule = !Mudim.newAccentRule;
 };
 Mudim.SetPreference = function() {
 	Mudim.settings.setIntPref("mudim.settings.method",Mudim.method);

@@ -187,7 +187,7 @@ Mudim.CheckSpell = function(key, grp) {
 			CHIM.off = len;
 			return CHIM.Append(len, c, key);
 		}
-	} else if( !CHIM.off ) {
+	} else if ( !CHIM.off ) {
 		var kp = Mudim.spchk.indexOf(key);
 		if (len>0) {
 			var lkey = b[len-1].toLowerCase();
@@ -216,44 +216,59 @@ Mudim.CheckSpell = function(key, grp) {
 			if (i>0) {
 				Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
 			}
-			if( CHIM.Speller.position < 0 ) {
-				if (lkey == 'q' && n!='u') {	// q must be followed by u
-					console.debug('Q not followed by u: spelling error');
-					CHIM.off = len;
+			if ( CHIM.Speller.position < 0 ) {
+				if (Mudim.headConsonants == 'q') {	// q must be followed by u
+					if (len==1 && n!='u') {
+						console.debug('Q not followed by u: spelling error');
+						CHIM.off = len;
+					} else if (b[1] == 'u' && n == 'u') {
+						console.debug('QUU: spelling error');
+						CHIM.off = len;
+					}
 				} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
 					console.debug('P not followed by h: spelling error');
 					CHIM.off = len;
 				} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
 					console.debug('K not followed by [iey]: spelling error');
 					CHIM.off = len;
-				} else if (n == 'y') {
-					if ('hklms'.indexOf(lkey) < 0) {
-						console.debug('Y must follow [hklms]: spelling error');
-						CHIM.off = len;
-					}
-				} else if (n=='e' || n=='i') {
-					if (len>1 && (lkey=='g')) {
-						console.debug('xg[ie]: not Viet');
-						CHIM.off=len;
-					}
-					if (lkey=='c') {
-						console.debug('c[ie] : not Viet');
-						CHIM.off=1;
-					}
+				} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
+					console.debug('NGH not followed by [ie]: spelling error');
+					CHIM.off = len;
 				} else {
 					CHIM.Speller.Set(len, key);
+					if (n == 'y') {
+						if ('hklms'.indexOf(lkey) < 0) {
+							console.debug('Y must follow [hklms]: spelling error');
+							CHIM.off = len;
+						}
+					} else if (n=='e' || n=='i') {
+						if (len>1 && (lkey=='g')) {
+							console.debug('xg[ie]: spelling error');
+							CHIM.off=len;
+						}
+						if (lkey=='c') {
+							console.debug('c[ie] : spelling error');
+							CHIM.off=1;
+						}
+					}
 				}
 			} else if( len - CHIM.Speller.position > 1 ) {
+				console.debug('Spelling error');
 				CHIM.off = len;
 			} else {
 				var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
 				var idx = Mudim.vwchk.indexOf(w);
-				console.debug('oaaaa : '+idx+' : '+Mudim.headConsonants);
-				if ( idx < 0 || (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C'))) {
-					
+				if ( idx < 0 ) {
+					console.debug('Vowel composition not found: spelling error');
+					CHIM.off = len;
+				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
+					console.debug('C doesnt come with this vowel composition');
+					CHIM.off = len;
+				} else if (lkey == 'y' && Mudim.headConsonants == '') {
+					console.debug('yx : spelling error');
 					CHIM.off = len;
 				} else {
-					CHIM.Speller.Set(len, key);
+					CHIM.Speller.Set(len,key);
 				}
 			}
 		} else {		// special cases
@@ -283,6 +298,9 @@ Mudim.CheckSpell = function(key, grp) {
 					break;
 			}
 		}
+	}
+	if (CHIM.off != 0) {
+		return true;
 	}
 };
 //----------------------------------------------------------------------------
@@ -1298,7 +1316,7 @@ Mudim.GetPreference = function() {
 	}
 };
 //----------------------------------------------------------------------------
-// Function: Mudim.GetPreference()
+// Function: MudimToggleAccentRule()
 //----------------------------------------------------------------------------
 Mudim.ToggleAccentRule = function() {
 	Mudim.newAccentRule = !Mudim.newAccentRule;
