@@ -264,8 +264,8 @@ Mudim.CheckSpell = function(key, grp) {
 				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
 					console.debug('C doesnt come with this vowel composition');
 					CHIM.off = len;
-				} else if (lkey == 'y' && Mudim.headConsonants == '') {
-					console.debug('yx : spelling error');
+				} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
+					console.debug('y[^e] : spelling error');
 					CHIM.off = len;
 				} else {
 					CHIM.Speller.Set(len,key);

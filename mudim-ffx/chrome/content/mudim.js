@@ -231,7 +231,7 @@ Mudim.CheckSpell = function(key, grp) {
 					CHIM.off = len;
 				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
 					CHIM.off = len;
-				} else if (lkey == 'y' && Mudim.headConsonants == '') {
+				} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
 					CHIM.off = len;
 				} else {
 					CHIM.Speller.Set(len,key);
