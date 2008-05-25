@@ -48,17 +48,20 @@ def makeMudimFfx():
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'vni.png',sep+'skin'+sep+'simple'+sep+'vni.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'telex.png',sep+'skin'+sep+'simple'+sep+'telex.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'viqr.png',sep+'skin'+sep+'simple'+sep+'viqr.png'],\
-                                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'auto.png',sep+'skin'+sep+'simple'+sep+'auto.png'],\
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'mixed.png',sep+'skin'+sep+'simple'+sep+'mixed.png'],\
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'simple'+sep+'auto.png',sep+'skin'+sep+'simple'+sep+'auto.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'off.png',sep+'skin'+sep+'solid'+sep+'off.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'vni.png',sep+'skin'+sep+'solid'+sep+'vni.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'telex.png',sep+'skin'+sep+'solid'+sep+'telex.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'viqr.png',sep+'skin'+sep+'solid'+sep+'viqr.png'],\
-                                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'auto.png',sep+'skin'+sep+'solid'+sep+'auto.png'],\
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'mixed.png',sep+'skin'+sep+'solid'+sep+'mixed.png'],\
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'solid'+sep+'auto.png',sep+'skin'+sep+'solid'+sep+'auto.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'off.png',sep+'skin'+sep+'light'+sep+'off.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'vni.png',sep+'skin'+sep+'light'+sep+'vni.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'telex.png',sep+'skin'+sep+'light'+sep+'telex.png'],\
                     ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'viqr.png',sep+'skin'+sep+'light'+sep+'viqr.png'],\
-                                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'auto.png',sep+'skin'+sep+'light'+sep+'auto.png']]
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'mixed.png',sep+'skin'+sep+'light'+sep+'mixed.png'],\
+                        ['mudim-ffx'+sep+'chrome'+sep+'skin'+sep+'light'+sep+'auto.png',sep+'skin'+sep+'light'+sep+'auto.png']]
         jsfile = open(mudjarNameList[2][0],'r')
         script=''
         for line in jsfile:

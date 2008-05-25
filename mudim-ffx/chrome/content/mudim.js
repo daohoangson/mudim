@@ -396,7 +396,7 @@ CHIM.ClearBuffer = function() {
 // Function: CHIM.SetDisplay
 //	Show current status on browser
 //----------------------------------------------------------------------------
-var methodNames=['off','vni','telex','viqr','auto'];
+var methodNames=['off','vni','telex','viqr','mixed','auto'];
 var SKIN=['simple','solid','light'];
 CHIM.SetDisplay = function() {
 	document.getElementById("menubutton").setAttribute("src","chrome://mudim/skin/"+SKIN[Mudim.skinIdx]+"/"+methodNames[Mudim.method]+".png");
@@ -461,7 +461,15 @@ CHIM.GetTarget = function(e) {
 	if (r.id == "searchbar") {
 		r=r._textbox;
 	}
+	if (r.tagName == "findbar") {
+		r = document.getAnonymousElementByAttribute(r,"anonid","findbar-textbox");
+	}
 	CHIM.peckable = r.tagName=='HTML' || r.type=='textarea' || r.type=='text' || r.tagName.indexOf('textbox')>-1;
+	if (r.id == "urlbar") {
+		if (!Mudim.typeInUrlBar) {
+			CHIM.peckable = false;
+		}
+	}
 	return r;
 };
 //----------------------------------------------------------------------------
@@ -519,8 +527,6 @@ CHIM.UpdateBuffer = function(target) {
 
 	CHIM.dirty = false;
 };
-//----------------------------------------------------------------------------
-CHIM.NOOP = [];	// e.g. ["f_password", "f_number", "f_english"]
 //----------------------------------------------------------------------------
 CHIM.VK_TAB = 9;
 CHIM.VK_BACKSPACE = 8;
@@ -662,7 +668,7 @@ CHIM.HTMLEditor.Process = function(target, l) {
 // Function: CHIM.Freeze
 //----------------------------------------------------------------------------
 CHIM.Freeze = function(target) {
-	var NOOP = CHIM.NOOP;
+	var NOOP = Mudim.IGNORE_ID;
 	if (NOOP.length > 0) {
 		for ( var i = 0; i < NOOP.length; i++ ) {
 			if( target.id == NOOP[i] ) return true;
@@ -799,6 +805,7 @@ CHIM.Attach = function(e) {
 		f=e.getElementsByTagName("frame");
 	}
 	for (var i = 0; i < f.length; i++) {
+		var doc = f[i].contentDocument;
 		try {
 			doc.iframe = f[i];
 			CHIM.Attach(doc);
@@ -926,6 +933,8 @@ Mudim.headConsonants='';
 Mudim.tailConsonants='';
 Mudim.skinIdx=0;
 Mudim.startWordOffset=0;
+Mudim.typeInUrlBar = false;
+Mudim.IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
 Mudim.StatusBarClicked = function(e) {
@@ -946,6 +955,8 @@ Mudim.MenuClicked = function(target) {
 		CHIM.Speller.Toggle();
 	} else if (value==6) {
 		Mudim.ToggleAccentRule();
+	} else if (value == 7) {
+		Mudim.ToggleTypingInUrlBar();
 	}
 };
 Mudim.UpdateMenu = function(m) {
@@ -954,6 +965,7 @@ Mudim.UpdateMenu = function(m) {
 	items[5].setAttribute("checked",Mudim.method==0); 
 	items[7].setAttribute("checked",CHIM.Speller.enabled);
 	items[9].setAttribute("checked",Mudim.newAccentRule);
+	items[11].setAttribute("checked",Mudim.typeInUrlBar);
 };
 Mudim.MenuSkinClicked = function(target) {
 	Mudim.skinIdx=target.getAttribute("value");
@@ -1200,18 +1212,25 @@ Mudim.GetMarkTypeID = function (key,group) {
 };
 Mudim.ToggleAccentRule = function() {
 	Mudim.newAccentRule = !Mudim.newAccentRule;
+	Mudim.SetPreference();
+};
+Mudim.ToggleTypingInUrlBar = function() {
+	Mudim.typeInUrlBar = !Mudim.typeInUrlBar;
+	Mudim.SetPreference();
 };
 Mudim.SetPreference = function() {
 	Mudim.settings.setIntPref("mudim.settings.method",Mudim.method);
 	Mudim.settings.setBoolPref("mudim.settings.spellChecking",CHIM.Speller.enabled);
 	Mudim.settings.setBoolPref("mudim.settings.accentRule",Mudim.newAccentRule);
 	Mudim.settings.setIntPref("mudim.settings.skinIdx",Mudim.skinIdx);
+	Mudim.settings.setBoolPref("mudim.settings.typeInUrlBar",Mudim.typeInUrlBar);
 };
 Mudim.GetPreference = function() {
 	Mudim.method=Mudim.settings.getIntPref("mudim.settings.method");
 	CHIM.Speller.enabled=Mudim.settings.getBoolPref("mudim.settings.spellChecking");
 	Mudim.newAccentRule=Mudim.settings.getBoolPref("mudim.settings.accentRule");
 	Mudim.skinIdx=Mudim.settings.getIntPref("mudim.settings.skinIdx");
+	Mudim.typeInUrlBar=Mudim.settings.getBoolPref("mudim.settings.typeInUrlBar");
 };
 Mudim.settings = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getBranch("chim");
 try {

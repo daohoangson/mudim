@@ -461,5 +461,86 @@
          id="tspan2845"
          x="208.57143"
          y="989.505">AUTO</tspan></text>
+    <rect
+       style="fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:1.49769306;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2439"
+       width="478.50229"
+       height="158.5023"
+       x="580.74884"
+       y="87.396736"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="747.14288"
+       y="198.07648"
+       id="text2441"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2443"
+         x="747.14288"
+         y="198.07648"
+         style="font-size:100px;fill:#ffffff;fill-opacity:1">VIQR</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.46937525;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2445"
+       width="458.53061"
+       height="138.53062"
+       x="590.73468"
+       y="97.382576"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <rect
+       style="fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:0.71287692;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2447"
+       width="119.28712"
+       height="119.28712"
+       x="600.35645"
+       y="107.00434"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <rect
+       style="fill:#808000;fill-opacity:1;stroke:#000000;stroke-width:0.79241091;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2449"
+       width="309.20758"
+       height="119.20759"
+       x="730.39618"
+       y="107.04409"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <text
+       xml:space="preserve"
+       style="font-size:120px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="601.42859"
+       y="209.50504"
+       id="text2451"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2453"
+         x="601.42859"
+         y="209.50504">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:93.69704437px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua;-inkscape-font-specification:Book Antiqua"
+       x="788.55383"
+       y="185.59178"
+       id="text2455"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\solid\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"
+       transform="scale(0.9369704,1.0672696)"><tspan
+         sodipodi:role="line"
+         id="tspan2457"
+         x="788.55383"
+         y="185.59178">MIXED</tspan></text>
   </g>
 </svg>

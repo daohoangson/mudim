@@ -175,5 +175,28 @@
          id="tspan2887"
          x="151.9283"
          y="991.86206">AUTO</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:1.30196249;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect2577"
+       width="478.69803"
+       height="158.69804"
+       x="609.22241"
+       y="70.156021"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\simple\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <text
+       xml:space="preserve"
+       style="font-size:120px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
+       x="643.35687"
+       y="191.86217"
+       id="text2579"
+       inkscape:export-filename="G:\mudim-svn\mudim-ffx\chrome\skin\simple\mixed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9"><tspan
+         sodipodi:role="line"
+         id="tspan2581"
+         x="643.35687"
+         y="191.86217">MIXED</tspan></text>
   </g>
 </svg>
