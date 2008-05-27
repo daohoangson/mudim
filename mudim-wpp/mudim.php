@@ -9,12 +9,9 @@ Author URI: http://mudim.googlecode.com
 */
 
 function include_js() {
-	echo '<script src="wp-content/plugins/mudim/mudim.js"></script>';
+	echo '<script src="'.get_bloginfo('url').'/wp-content/plugins/mudim/mudim.js"></script>';
 }
-function include_js_admin() {
-	echo '<script src="../wp-content/plugins/mudim/mudim.js"></script>';
-}
-add_action('admin_head', 'include_js_admin');
+add_action('admin_head', 'include_js');
 add_action('wp_head', 'include_js');
 
 ?>
