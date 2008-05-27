@@ -99,6 +99,19 @@ def makeMudimVbb():
         for fn in mudWwpFileList:
                 zf.write(fn[0],fn[1])
         zf.close()
+
+def makeMudimJla():
+        mudJlaFileList=[['mudim-jla'+sep+'mudim.xml',sep+'mudim.xml'],\
+                        ['mudim-jla'+sep+'mudim.php',sep+'mudim.php']]
+        zf = ZipFile('mudim-jla'+sep+'mudim.zip','w',ZIP_STORED)
+        for fn in mudJlaFileList:
+                zf.write(fn[0],fn[1])
+        zf.close()
+        zf = ZipFile('mudim-jla'+sep+'mudim-jla.zip','w',ZIP_DEFLATED)
+        zf.write('mudim-jla'+sep+'mudim.zip',sep+'mudim.zip')
+        zf.write('mudim'+sep+'mudim.js',sep+'mudim.js')
+        zf.close()
+        os.remove('mudim-jla'+sep+'mudim.zip')
         
 def printUsage():
 	print '''
@@ -127,12 +140,15 @@ if __name__=='__main__':
                                 makeMudimWpp()
                         elif func=='vbb':
                                 makeMudimVbb()
+                        elif func=='jla':
+                                makeMudimJla()
 			elif func=='all':
 			    makeMudimJs()
 			    makeMudimZip()
 			    makeMudimFfx()
 			    makeMudimWpp()
 			    makeMudimVbb()
+			    makeMudimJla()
 			else:
 				printUsage()				
 	else:

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
+<install version="1.5" type="plugin" group="system"> 
+	<name>Mudim Plugin</name> 
+	<author>Mudzot</author> 
+	<authorEmail>mudzot@gmail.com</authorEmail> 
+	<authorUrl>http://mudim.googlecode.com</authorUrl> 
+	<creationDate>May 2008</creationDate> 
+	<copyright>(C) 2008 Mudzot - http://mudim.googlecode.com</copyright> 
+	<license>GPL v2</license> 
+	<version>0.7</version> 
+	<description>This plugin allows users to type Vietnamese language anywhere in you website</description> 
+	<files> 
+		<filename plugin="mudim">mudim.php</filename> 
+	</files> 
+	<params/>
+</install>
