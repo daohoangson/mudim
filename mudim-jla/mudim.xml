@@ -12,6 +12,7 @@
 	<description>This plugin allows users to type Vietnamese language anywhere in you website</description> 
 	<files> 
 		<filename plugin="mudim">mudim.php</filename> 
+		<filename>mudim/mudim.js</filename>
 	</files> 
 	<params/>
 </install>
