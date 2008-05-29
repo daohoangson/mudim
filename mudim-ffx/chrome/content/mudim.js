@@ -365,10 +365,24 @@ CHIM.AddKey = function( key ) {
 };
 CHIM.BackSpace = function() {
 	var count = CHIM.buffer.length;
-	if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
 	if( count <= 0 ) {
 		CHIM.dirty = true;
 	} else {
+		if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
+		var i=CHIM.vn_OW.length-1;
+		var code = CHIM.buffer[count-1].charCodeAt(0);
+		while (i>=0 && CHIM.vn_OW[i] != code) {		// test if this is o+
+			i--;
+		}
+		if (i<0) {
+			i=CHIM.vn_UW.length-1;		
+			while (i>=0 && CHIM.vn_UW[i] != code) {		// is this u+ ?
+				i--;
+			}
+		}
+		if (i>=0 && (i%2) == 1) {
+			Mudim.w--;
+		}
 		--count;
 		CHIM.buffer.pop();
 		if( count == CHIM.Speller.position ) {

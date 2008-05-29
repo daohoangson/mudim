@@ -434,10 +434,25 @@ CHIM.AddKey = function( key ) {
 //----------------------------------------------------------------------------
 CHIM.BackSpace = function() {
 	var count = CHIM.buffer.length;
-	if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
 	if( count <= 0 ) {
 		CHIM.dirty = true;
 	} else {
+		if (Mudim.accent[0]==count-1) Mudim.ResetAccentInfo();
+		var i=CHIM.vn_OW.length-1;
+		var code = CHIM.buffer[count-1].charCodeAt(0);
+		while (i>=0 && CHIM.vn_OW[i] != code) {		// test if this is o+
+			i--;
+		}
+		if (i<0) {
+			i=CHIM.vn_UW.length-1;		
+			while (i>=0 && CHIM.vn_UW[i] != code) {		// is this u+ ?
+				i--;
+			}
+		}
+		if (i>=0 && (i%2) == 1) {
+			console.debug('Decrease w');
+			Mudim.w--;
+		}
 		--count;
 		CHIM.buffer.pop();
 		if( count == CHIM.Speller.position ) {
@@ -1300,7 +1315,6 @@ Mudim.GetPreference = function() {
 	for (var i=0;i<c.length && c[i].indexOf('|mudim-settings')<0;i++);
 	if (i==c.length) {
 		CHIM.SetDisplay();
-		Mudim.ShowPanel();
 	} else {
 		var value=parseInt(c[i].split('=')[1],10);
 		console.debug('Cookie value read : %d',value);
@@ -1308,11 +1322,11 @@ Mudim.GetPreference = function() {
 		CHIM.Speller.enabled = (value & 8) ? true : false;
 		CHIM.newAccentRule = (value & 16) ? true : false;
 		Mudim.showPanel = (value & 32) ? true : false;
-		if (Mudim.showPanel) {
-			Mudim.ShowPanel();
-		} else {
-			Mudim.HidePanel();
-		}
+	}
+	if (Mudim.showPanel) {
+		Mudim.ShowPanel();
+	} else {
+		Mudim.HidePanel();
 	}
 };
 //----------------------------------------------------------------------------
