@@ -144,130 +144,137 @@ Mudim.CheckSpell = function(key, grp) {
 	var b = CHIM.buffer;
 	var len = b.length;
 	var n = key.toLowerCase();
-	// Rule based on the ending consonants
-	if (grp > 0 && CHIM.off == 0) {
-		if (Mudim.tailConsonants.length>0) {
-			var ecIdx=Mudim.tailConsonantsPattern.indexOf('|'+Mudim.tailConsonants+'|');
-			if (ecIdx<0) {		// spelling rule as described in Issue #16 comment #1
-				CHIM.off = len;
-				Mudim.tailConsonants='';
-				return true;
-			} else if (ecIdx<9 && grp==2) {
-				var typeid = Mudim.GetMarkTypeID(n,2);
-				if (typeid !=0 && typeid!=1 && typeid!=5) {
+	if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
+		CHIM.ClearBuffer();
+		Mudim.tempDisableSpellCheck = true;
+	}
+	if (CHIM.Speller.enabled && !Mudim.tempDisableSpellCheck) {
+		// Rule based on the ending consonants
+		if (grp > 0 && CHIM.off == 0) {
+			if (Mudim.tailConsonants.length>0) {
+				var ecIdx=Mudim.tailConsonantsPattern.indexOf('|'+Mudim.tailConsonants+'|');
+				if (ecIdx<0) {		// spelling rule as described in Issue #16 comment #1
 					CHIM.off = len;
 					Mudim.tailConsonants='';
 					return true;
+				} else if (ecIdx<9 && grp==2) {
+					var typeid = Mudim.GetMarkTypeID(n,2);
+					if (typeid !=0 && typeid!=1 && typeid!=5) {
+						CHIM.off = len;
+						Mudim.tailConsonants='';
+						return true;
+					}
 				}
 			}
-		}
-		
-		if (len == 2 && (b[1]==CHIM.CHAR_u || b[1]==CHIM.CHAR_U) && (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) && (grp==2 || (grp==1 && Mudim.GetMarkTypeID(n,1)==1))) {	//spelling rule as described in Issue #16 comment #0
-			CHIM.off = len;
-			return CHIM.Append(len, c, key);
-		}
-	} else if ( !CHIM.off ) {
-		var kp = Mudim.spchk.indexOf(key);
-		if (len>0) {
-			var lkey = b[len-1].toLowerCase();
-		}
-		if ( len==0 ) {
-			if ( Mudim.nvchk.indexOf(key) >= 0 ) {
-				CHIM.off = -1;
-			} else if ( kp >= 0 && kp < 12 ) {
-				CHIM.Speller.Set(0, key);
-			} else if( kp == 12 || kp > 37 ) {
-				return;
-			} else {
-				CHIM.Speller.Clear();
+			
+			if (len == 2 && (b[1]==CHIM.CHAR_u || b[1]==CHIM.CHAR_U) && (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) && (grp==2 || (grp==1 && Mudim.GetMarkTypeID(n,1)==1))) {	//spelling rule as described in Issue #16 comment #0
+				CHIM.off = len;
+				return CHIM.Append(len, c, key);
 			}
-		} else if( kp == 12 || kp > 37 ) {	// | or `~^.?
-			CHIM.ClearBuffer();
-			return;
-		} else if( kp > 12 ) {		// b, d, f,...
-			CHIM.off = len;
-		} else if( kp >= 0 ) { // vowels				
-			var i = 0;
-			while (Mudim.consonants.indexOf(b[i])>=0) {
-				i++;
+		} else if ( !CHIM.off ) {
+			var kp = Mudim.spchk.indexOf(key);
+			if (len>0) {
+				var lkey = b[len-1].toLowerCase();
 			}
-			if (i>0) {
-				Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
-			}
-			if ( CHIM.Speller.position < 0 ) {
-				if (Mudim.headConsonants == 'q') {	// q must be followed by u
-					if (len==1 && n!='u') {
-						CHIM.off = len;
-					} else if (b[1] == 'u' && n == 'u') {
-						CHIM.off = len;
-					}
-				} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
-					CHIM.off = len;
-				} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
-					CHIM.off = len;
-				} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
-					CHIM.off = len;
+			if ( len==0 ) {
+				if ( Mudim.nvchk.indexOf(key) >= 0 ) {
+					CHIM.off = -1;
+				} else if ( kp >= 0 && kp < 12 ) {
+					CHIM.Speller.Set(0, key);
+				} else if( kp == 12 || kp > 37 ) {
+					return;
 				} else {
-					CHIM.Speller.Set(len, key);
-					if (n == 'y') {
-						if ('hklms'.indexOf(lkey) < 0) {
+					CHIM.Speller.Clear();
+				}
+			} else if( kp == 12 || kp > 37 ) {	// | or `~^.?
+				CHIM.ClearBuffer();
+				return;
+			} else if( kp > 12 ) {		// b, d, f,...
+				CHIM.off = len;
+			} else if( kp >= 0 ) { // vowels				
+				var i = 0;
+				while (Mudim.consonants.indexOf(b[i])>=0) {
+					i++;
+				}
+				if (i>0) {
+					Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
+				}
+				if ( CHIM.Speller.position < 0 ) {
+					if (Mudim.headConsonants == 'q') {	// q must be followed by u
+						if (len==1 && n!='u') {
+							CHIM.off = len;
+						} else if (b[1] == 'u' && n == 'u') {
 							CHIM.off = len;
 						}
-					} else if (n=='e' || n=='i') {
-						if (len>1 && (lkey=='g')) {
-							CHIM.off=len;
-						}
-						if (lkey=='c') {
-							CHIM.off=1;
+					} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
+						CHIM.off = len;
+					} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
+						CHIM.off = len;
+					} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
+						CHIM.off = len;
+					} else {
+						CHIM.Speller.Set(len, key);
+						if (n == 'y') {
+							if ('hklms'.indexOf(lkey) < 0) {
+								CHIM.off = len;
+							}
+						} else if (n=='e' || n=='i') {
+							if (len>1 && (lkey=='g')) {
+								CHIM.off=len;
+							}
+							if (lkey=='c') {
+								CHIM.off=1;
+							}
 						}
 					}
-				}
-			} else if( len - CHIM.Speller.position > 1 ) {
-				CHIM.off = len;
-			} else {
-				var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
-				var idx = Mudim.vwchk.indexOf(w);
-				if ( idx < 0 ) {
-					CHIM.off = len;
-				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
-					CHIM.off = len;
-				} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
+				} else if( len - CHIM.Speller.position > 1 ) {
 					CHIM.off = len;
 				} else {
-					CHIM.Speller.Set(len,key);
+					var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
+					var idx = Mudim.vwchk.indexOf(w);
+					if ( idx < 0 ) {
+						CHIM.off = len;
+					} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
+						CHIM.off = len;
+					} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
+						CHIM.off = len;
+					} else {
+						CHIM.Speller.Set(len,key);
+					}
+				}
+			} else {		// special cases
+				switch( key ) {
+					case 'h':
+					case 'H': // [cgknpt]h
+						if( lkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lkey) < 0 ) {
+							CHIM.off = len;
+						}
+						break;
+					case 'g':
+					case 'G': // [n]g
+						if( lkey != 'n' && lkey != 'N' ) {
+							CHIM.off = len;
+						}
+						break;
+					case 'r':
+					case 'R': // [t]r
+						if( lkey != 't' && lkey != 'T' ) {
+							CHIM.off = len;
+						}
+						break;
+					default:
+						if( Mudim.consonants.indexOf(lkey) >= 0 ) {
+							CHIM.off = len;
+						}
+						break;
 				}
 			}
-		} else {		// special cases
-			switch( key ) {
-				case 'h':
-				case 'H': // [cgknpt]h
-					if( lkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lkey) < 0 ) {
-						CHIM.off = len;
-					}
-					break;
-				case 'g':
-				case 'G': // [n]g
-					if( lkey != 'n' && lkey != 'N' ) {
-						CHIM.off = len;
-					}
-					break;
-				case 'r':
-				case 'R': // [t]r
-					if( lkey != 't' && lkey != 'T' ) {
-						CHIM.off = len;
-					}
-					break;
-				default:
-					if( Mudim.consonants.indexOf(lkey) >= 0 ) {
-						CHIM.off = len;
-					}
-					break;
-			}
+		}
+		if (CHIM.off != 0) {
+			return true;
 		}
 	}
-	if (CHIM.off != 0) {
-		return true;
-	}
+	return false;
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.Append
@@ -288,9 +295,9 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
-	if( !count || CHIM.off != 0 ) {
-		if (CHIM.Speller.enabled) {
-			Mudim.CheckSpell(key,0);
+	if( !count || CHIM.off != 0 || Mudim.tempOff) {
+		if (Mudim.CheckSpell(key,l)) {
+			return CHIM.Append(count, c, key);
 		}
 		return CHIM.Append(0, 0, key);
 	}
@@ -300,9 +307,7 @@ CHIM.AddKey = function( key ) {
 	for( l = 1; l < m.length; l++ )
 		if( m[l].indexOf(n) >= 0 ) {break;}
 	if( l >= m.length ) {
-		if (CHIM.Speller.enabled) {
-			Mudim.CheckSpell(key,0);
-		}
+		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
 	if ((p=Mudim.FindAccentPos(n))<0) {
@@ -310,10 +315,8 @@ CHIM.AddKey = function( key ) {
 		return CHIM.Append(count, c, key);
 	}
 	Mudim.lord='dz';
-	if (CHIM.Speller.enabled) {
-		if (Mudim.CheckSpell(key,l)) {
-			return CHIM.Append(count, c, key);
-		}
+	if (Mudim.CheckSpell(key,l)) {
+		return CHIM.Append(count, c, key);
 	}
 	c=b[p];
 	var x = c.charCodeAt(0);
@@ -353,9 +356,7 @@ CHIM.AddKey = function( key ) {
 		}
 	}
 	if( !found ) {
-		if (CHIM.Speller.enabled) {
-			Mudim.CheckSpell(key,0);
-		}
+		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
 	if (CHIM.off!=0) {
@@ -405,6 +406,8 @@ CHIM.ClearBuffer = function() {
 	Mudim.ResetAccentInfo();
 	Mudim.headConsonants='';
 	Mudim.tailConsonants='';
+	Mudim.tempOff = false;
+	Mudim.tempDisableSpellCheck = false;
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -558,6 +561,9 @@ CHIM.VK_UP_ARROW = 38;
 CHIM.VK_DOWN_ARROW = 40;
 CHIM.VK_ONOFF = '/'.charCodeAt(0);	
 CHIM.VK_SWITCHMETHOD = ','.charCodeAt(0);	
+CHIM.VK_CTRL = 17;
+CHIM.VK_SHIFT = 16;
+CHIM.VK_ALT = 18;
 //----------------------------------------------------------------------------
 // Function: ProcessControlKey
 //----------------------------------------------------------------------------
@@ -712,7 +718,12 @@ CHIM.KeyHandler = function(e) {
 	
 	var target = null;
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) {return;}
+	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) {
+		if (keyCode == CHIM.VK_BACKSPACE || keyCode == CHIM.VK_LEFT_ARROW || keyCode == CHIM.VK_RIGHT_ARROW) {
+			CHIM.dirty = true;
+		}
+		return;
+	}
 
 	if ( e.charCode == null || e.charCode != 0 ) { // process ASCII only
 		var key = String.fromCharCode(keyCode);
@@ -726,6 +737,12 @@ CHIM.KeyHandler = function(e) {
 			if (l==0) {
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
 			}
+			if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
+				CHIM.ClearBuffer();
+				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
+				Mudim.tempDisableSpellCheck = true;
+			}
+			Mudim.lastTempDisableSpellCheck = Mudim.tempDisableSpellCheck;
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
 				if (e.preventDefault) {e.preventDefault();}
@@ -752,10 +769,27 @@ CHIM.KeyHandler = function(e) {
 CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) {e = window.event;}
+	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLetf ) {
+		var set;
+		if (e.keyCode == CHIM.VK_SHIFT) {
+			set = true;
+		} else {
+			set = false;
+		}
+		if (!Mudim.tempOff && set) {
+			Mudim.tempOff = true;
+		}
+		if (e.keyCode == CHIM.VK_CTRL) {
+			set = true;
+		} else {
+			set = false;
+		}
+		if (!Mudim.tempDisableSpellCheck && set) {
+			Mudim.tempDisableSpellCheck = true;
+		}
+		return;
+	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey ||
-			e.shiftKey || e.shiftLetf ) {return;}
-
 	var keyCode = e.keyCode;
 	if ( keyCode == 0 ) {	// as it might on Moz
 		keyCode = e.charCode;
@@ -949,6 +983,9 @@ Mudim.skinIdx=0;
 Mudim.startWordOffset=0;
 Mudim.typeInUrlBar = false;
 Mudim.IGNORE_ID = [];
+Mudim.tempOff = false;
+Mudim.tempDisableSpellCheck = false;
+Mudim.lastTempDisableSpellCheck = false;
 //----------------------------------------------------------------------------
 
 Mudim.StatusBarClicked = function(e) {

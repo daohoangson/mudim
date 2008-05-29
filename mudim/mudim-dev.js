@@ -11,8 +11,8 @@
  (c)2008 by Mudzot
  http://code.google.com/p/mudim
  email: mudzot<at>gmail.com
- version: 0.7
- date: 19.05.08
+ version: 0.8
+ date: 29.05.08
 ----------------------------------------------------------------------------
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -162,146 +162,149 @@ Mudim.CheckSpell = function(key, grp) {
 	var b = CHIM.buffer;
 	var len = b.length;
 	var n = key.toLowerCase();
-	console.debug('Begin CheckSpell');
-	// Rule based on the ending consonants
-	if (grp > 0 && CHIM.off == 0) {
-		if (Mudim.tailConsonants.length>0) {
-			var ecIdx=Mudim.tailConsonantsPattern.indexOf('|'+Mudim.tailConsonants+'|');
-			if (ecIdx<0) {		// spelling rule as described in Issue #16 comment #1
-				CHIM.off = len;
-				Mudim.tailConsonants='';
-				console.debug('Tail consonants not in pattern, just append');
-				return true;
-			} else if (ecIdx<9 && grp==2) {
-				var typeid = Mudim.GetMarkTypeID(n,2);
-				if (typeid !=0 && typeid!=1 && typeid!=5) {
+	if (CHIM.Speller.enabled && !Mudim.tempDisableSpellCheck) {
+		console.debug('Begin CheckSpell');
+		// Rule based on the ending consonants
+		if (grp > 0 && CHIM.off == 0) {
+			if (Mudim.tailConsonants.length>0) {
+				var ecIdx=Mudim.tailConsonantsPattern.indexOf('|'+Mudim.tailConsonants+'|');
+				if (ecIdx<0) {		// spelling rule as described in Issue #16 comment #1
 					CHIM.off = len;
 					Mudim.tailConsonants='';
 					console.debug('Tail consonants not in pattern, just append');
 					return true;
+				} else if (ecIdx<9 && grp==2) {
+					var typeid = Mudim.GetMarkTypeID(n,2);
+					if (typeid !=0 && typeid!=1 && typeid!=5) {
+						CHIM.off = len;
+						Mudim.tailConsonants='';
+						console.debug('Tail consonants not in pattern, just append');
+						return true;
+					}
 				}
 			}
-		}
-		
-		if (len == 2 && (b[1]==CHIM.CHAR_u || b[1]==CHIM.CHAR_U) && (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) && (grp==2 || (grp==1 && Mudim.GetMarkTypeID(n,1)==1))) {	//spelling rule as described in Issue #16 comment #0
-			CHIM.off = len;
-			return CHIM.Append(len, c, key);
-		}
-	} else if ( !CHIM.off ) {
-		var kp = Mudim.spchk.indexOf(key);
-		if (len>0) {
-			var lkey = b[len-1].toLowerCase();
-		}
-		if ( len==0 ) {
-			console.debug('Buffer empty');
-			if ( Mudim.nvchk.indexOf(key) >= 0 ) {
-				CHIM.off = -1;
-			} else if ( kp >= 0 && kp < 12 ) {
-				CHIM.Speller.Set(0, key);
-			} else if( kp == 12 || kp > 37 ) {
-				return;
-			} else {
-				CHIM.Speller.Clear();
+			
+			if (len == 2 && (b[1]==CHIM.CHAR_u || b[1]==CHIM.CHAR_U) && (b[0]==CHIM.CHAR_q || b[0]==CHIM.CHAR_Q) && (grp==2 || (grp==1 && Mudim.GetMarkTypeID(n,1)==1))) {	//spelling rule as described in Issue #16 comment #0
+				CHIM.off = len;
+				return CHIM.Append(len, c, key);
 			}
-		} else if( kp == 12 || kp > 37 ) {	// | or `~^.?
-			CHIM.ClearBuffer();
-			return;
-		} else if( kp > 12 ) {		// b, d, f,...
-			CHIM.off = len;
-		} else if( kp >= 0 ) { // vowels				
-			var i = 0;
-			while (Mudim.consonants.indexOf(b[i])>=0) {
-				i++;
+		} else if ( !CHIM.off ) {
+			var kp = Mudim.spchk.indexOf(key);
+			if (len>0) {
+				var lkey = b[len-1].toLowerCase();
 			}
-			if (i>0) {
-				Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
-			}
-			if ( CHIM.Speller.position < 0 ) {
-				if (Mudim.headConsonants == 'q') {	// q must be followed by u
-					if (len==1 && n!='u') {
-						console.debug('Q not followed by u: spelling error');
-						CHIM.off = len;
-					} else if (b[1] == 'u' && n == 'u') {
-						console.debug('QUU: spelling error');
-						CHIM.off = len;
-					}
-				} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
-					console.debug('P not followed by h: spelling error');
-					CHIM.off = len;
-				} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
-					console.debug('K not followed by [iey]: spelling error');
-					CHIM.off = len;
-				} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
-					console.debug('NGH not followed by [ie]: spelling error');
-					CHIM.off = len;
+			if ( len==0 ) {
+				console.debug('Buffer empty');
+				if ( Mudim.nvchk.indexOf(key) >= 0 ) {
+					CHIM.off = -1;
+				} else if ( kp >= 0 && kp < 12 ) {
+					CHIM.Speller.Set(0, key);
+				} else if( kp == 12 || kp > 37 ) {
+					return;
 				} else {
-					CHIM.Speller.Set(len, key);
-					if (n == 'y') {
-						if ('hklms'.indexOf(lkey) < 0) {
-							console.debug('Y must follow [hklms]: spelling error');
+					CHIM.Speller.Clear();
+				}
+			} else if( kp == 12 || kp > 37 ) {	// | or `~^.?
+				CHIM.ClearBuffer();
+				return;
+			} else if( kp > 12 ) {		// b, d, f,...
+				CHIM.off = len;
+			} else if( kp >= 0 ) { // vowels				
+				var i = 0;
+				while (Mudim.consonants.indexOf(b[i])>=0) {
+					i++;
+				}
+				if (i>0) {
+					Mudim.headConsonants = b.slice(0,i).toString().replace(/,/g,'').toLowerCase();
+				}
+				if ( CHIM.Speller.position < 0 ) {
+					if (Mudim.headConsonants == 'q') {	// q must be followed by u
+						if (len==1 && n!='u') {
+							console.debug('Q not followed by u: spelling error');
+							CHIM.off = len;
+						} else if (b[1] == 'u' && n == 'u') {
+							console.debug('QUU: spelling error');
 							CHIM.off = len;
 						}
-					} else if (n=='e' || n=='i') {
-						if (len>1 && (lkey=='g')) {
-							console.debug('xg[ie]: spelling error');
-							CHIM.off=len;
-						}
-						if (lkey=='c') {
-							console.debug('c[ie] : spelling error');
-							CHIM.off=1;
+					} else if (lkey == 'p' && n!= 'h') {	// p must be followed by h
+						console.debug('P not followed by h: spelling error');
+						CHIM.off = len;
+					} else if (lkey == 'k' && n != 'i' && n !='e' && n!='y') {
+						console.debug('K not followed by [iey]: spelling error');
+						CHIM.off = len;
+					} else if (Mudim.headConsonants == 'ngh' && n!='i' && n!='e') {
+						console.debug('NGH not followed by [ie]: spelling error');
+						CHIM.off = len;
+					} else {
+						CHIM.Speller.Set(len, key);
+						if (n == 'y') {
+							if ('hklms'.indexOf(lkey) < 0) {
+								console.debug('Y must follow [hklms]: spelling error');
+								CHIM.off = len;
+							}
+						} else if (n=='e' || n=='i') {
+							if (len>1 && (lkey=='g')) {
+								console.debug('xg[ie]: spelling error');
+								CHIM.off=len;
+							}
+							if (lkey=='c') {
+								console.debug('c[ie] : spelling error');
+								CHIM.off=1;
+							}
 						}
 					}
-				}
-			} else if( len - CHIM.Speller.position > 1 ) {
-				console.debug('Spelling error');
-				CHIM.off = len;
-			} else {
-				var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
-				var idx = Mudim.vwchk.indexOf(w);
-				if ( idx < 0 ) {
-					console.debug('Vowel composition not found: spelling error');
-					CHIM.off = len;
-				} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
-					console.debug('C doesnt come with this vowel composition');
-					CHIM.off = len;
-				} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
-					console.debug('y[^e] : spelling error');
+				} else if( len - CHIM.Speller.position > 1 ) {
+					console.debug('Spelling error');
 					CHIM.off = len;
 				} else {
-					CHIM.Speller.Set(len,key);
+					var w = "|"+CHIM.Speller.Last().toLowerCase()+key.toLowerCase()+"|";
+					var idx = Mudim.vwchk.indexOf(w);
+					if ( idx < 0 ) {
+						console.debug('Vowel composition not found: spelling error');
+						CHIM.off = len;
+					} else if (idx < 18 && (Mudim.headConsonants == 'c' || Mudim.headConsonants == 'C')){
+						console.debug('C doesnt come with this vowel composition');
+						CHIM.off = len;
+					} else if (lkey == 'y' && Mudim.headConsonants == '' && n != 'e') {
+						console.debug('y[^e] : spelling error');
+						CHIM.off = len;
+					} else {
+						CHIM.Speller.Set(len,key);
+					}
+				}
+			} else {		// special cases
+				switch( key ) {
+					case 'h':
+					case 'H': // [cgknpt]h
+						if( lkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lkey) < 0 ) {
+							CHIM.off = len;
+						}
+						break;
+					case 'g':
+					case 'G': // [n]g
+						if( lkey != 'n' && lkey != 'N' ) {
+							CHIM.off = len;
+						}
+						break;
+					case 'r':
+					case 'R': // [t]r
+						if( lkey != 't' && lkey != 'T' ) {
+							CHIM.off = len;
+						}
+						break;
+					default:
+						if( Mudim.consonants.indexOf(lkey) >= 0 ) {
+							CHIM.off = len;
+						}
+						break;
 				}
 			}
-		} else {		// special cases
-			switch( key ) {
-				case 'h':
-				case 'H': // [cgknpt]h
-					if( lkey >= CHIM.CHAR_0x80 || "CGKNPTcgknpt".indexOf(lkey) < 0 ) {
-						CHIM.off = len;
-					}
-					break;
-				case 'g':
-				case 'G': // [n]g
-					if( lkey != 'n' && lkey != 'N' ) {
-						CHIM.off = len;
-					}
-					break;
-				case 'r':
-				case 'R': // [t]r
-					if( lkey != 't' && lkey != 'T' ) {
-						CHIM.off = len;
-					}
-					break;
-				default:
-					if( Mudim.consonants.indexOf(lkey) >= 0 ) {
-						CHIM.off = len;
-					}
-					break;
-			}
+		}
+		if (CHIM.off != 0) {
+			return true;
 		}
 	}
-	if (CHIM.off != 0) {
-		return true;
-	}
+	return false;
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.Append
@@ -342,7 +345,7 @@ CHIM.AddKey = function( key ) {
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
 	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
-	if( !count || CHIM.off != 0 ) {
+	if( !count || CHIM.off != 0 || Mudim.tempOff) {
 		if (Mudim.CheckSpell(key,l)) {
 			return CHIM.Append(count, c, key);
 		}
@@ -355,9 +358,7 @@ CHIM.AddKey = function( key ) {
 		if( m[l].indexOf(n) >= 0 ) {break;}
 	if( l >= m.length ) {
 		console.debug('Not mark key, just append to buffer');
-		if (CHIM.Speller.enabled) {
-			Mudim.CheckSpell(key,0);
-		}
+		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
 	if ((p=Mudim.FindAccentPos(n))<0) {
@@ -367,10 +368,8 @@ CHIM.AddKey = function( key ) {
 	}
 	console.debug('Found mark position: %d',p);
 	Mudim.lord='dz';
-	if (CHIM.Speller.enabled) {
-		if (Mudim.CheckSpell(key,l)) {
-			return CHIM.Append(count, c, key);
-		}
+	if (Mudim.CheckSpell(key,l)) {
+		return CHIM.Append(count, c, key);
 	}
 	c=b[p];
 	var x = c.charCodeAt(0);
@@ -417,9 +416,7 @@ CHIM.AddKey = function( key ) {
 	}
 	if( !found ) {
 		console.debug('Mark isnt compatible with this position');
-		if (CHIM.Speller.enabled) {
-			Mudim.CheckSpell(key,0);
-		}
+		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
 	if (CHIM.off!=0) {
@@ -475,6 +472,8 @@ CHIM.ClearBuffer = function() {
 	Mudim.ResetAccentInfo();
 	Mudim.tailConsonants='';
 	Mudim.headConsonants='';
+	Mudim.tempOff = false;
+	Mudim.tempDisableSpellCheck = false;
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -677,6 +676,9 @@ CHIM.VK_DOWN_ARROW = 40;
 CHIM.VK_ONOFF = 120;	//F9
 CHIM.VK_ONOFF2 = 121;	//F10
 CHIM.VK_PANELTOGGLE = 119;	//F8
+CHIM.VK_CTRL = 17;
+CHIM.VK_SHIFT = 16;
+CHIM.VK_ALT = 18;
 //----------------------------------------------------------------------------
 // Function: ProcessControlKey
 //----------------------------------------------------------------------------
@@ -821,11 +823,15 @@ CHIM.KeyHandler = function(e) {
 	if ( keyCode == 0 ) {	// unlikely to get here
 		keyCode = e.which;
 	}
-	if ( !Mudim.method ) {return;}
+	if ( Mudim.method == 0 ) {return;}
 	var target = null;
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) {return;}
-
+	if ( e.ctrlKey || e.ctrlLeft || e.metaKey) {
+		if (keyCode == CHIM.VK_BACKSPACE || keyCode == CHIM.VK_LEFT_ARROW || keyCode == CHIM.VK_RIGHT_ARROW) {
+			CHIM.dirty = true;
+		}
+		return;
+	}
 	if ( e.charCode == null || e.charCode != 0 ) { // process ASCII only
 		var key = String.fromCharCode(keyCode);
 		if ( keyCode == CHIM.VK_SPACE || keyCode == CHIM.VK_ENTER ) {
@@ -838,6 +844,12 @@ CHIM.KeyHandler = function(e) {
 			if (l==0) {
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
 			}
+			if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
+				CHIM.ClearBuffer();
+				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
+				Mudim.tempDisableSpellCheck = true;
+			}
+			Mudim.lastTempDisableSpellCheck = Mudim.tempDisableSpellCheck;
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
 				if (e.preventDefault) {e.preventDefault();}
@@ -865,7 +877,26 @@ CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) {e = window.event;}
 	if (CHIM.IsHotkey(e,e.keyCode)) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLetf ) {
+	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLeft ) {
+		var set;
+		if (e.keyCode == CHIM.VK_SHIFT) {
+			set = true;
+		} else {
+			set = false;
+		}
+		if (!Mudim.tempOff && set) {
+			Mudim.tempOff = true;
+			console.debug('Temporarily switch off');
+		}
+		if (e.keyCode == CHIM.VK_CTRL) {
+			set = true;
+		} else {
+			set = false;
+		}
+		if (!Mudim.tempDisableSpellCheck && set) {
+			Mudim.tempDisableSpellCheck = true;
+			console.debug('Temporarily disable spell checking');
+		}
 		return;
 	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
@@ -1354,7 +1385,7 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com"><acronym title="Mudzot\'s Input Method">Mudim</acronym></a> v0.7 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[8]+'</a> (F8) ]</div>';
+		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method">Mudim</a> v0.8 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[8]+'</a> (F8) ]</div>';
 		f.style.display = 'None';
 		document.body.insertBefore(f,document.body.firstChild);
 		Mudim.Panel=f;
@@ -1391,6 +1422,9 @@ Mudim.oldMethod = 4;
 Mudim.showPanel = true;
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
 Mudim.w = 0;
+Mudim.tempOff = false;
+Mudim.tempDisableSpellCheck = false;
+Mudim.lastTempDisableSpellCheck = false;
 /**
 * Head consonants
 */
@@ -1424,7 +1458,11 @@ if (!window.opera && document.all) { // IE
 
 // Change log
 
+// Changes in 0.8
+// Add escape method with Ctrl and Shift
+// Fix issue #10
 // Improve compatibility with other js input methods (specifically, with avim)
+// Fix issue #30
 
 // Changes in 0.7
 // Fix issue #21 (return false in toggle links)
