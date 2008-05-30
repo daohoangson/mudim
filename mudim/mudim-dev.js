@@ -474,6 +474,8 @@ CHIM.ClearBuffer = function() {
 	Mudim.headConsonants='';
 	Mudim.tempOff = false;
 	Mudim.tempDisableSpellCheck = false;
+	Mudim.ctrlSerie = false;
+	Mudim.shiftSerie = false;
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -884,19 +886,23 @@ CHIM.KeyDown = function(e) {
 		} else {
 			set = false;
 		}
+		/*
 		if (!Mudim.tempOff && set) {
 			Mudim.tempOff = true;
 			console.debug('Temporarily switch off');
-		}
+		}*/
+		Mudim.tempOff = set;
 		if (e.keyCode == CHIM.VK_CTRL) {
 			set = true;
 		} else {
 			set = false;
 		}
+		/*
 		if (!Mudim.tempDisableSpellCheck && set) {
 			Mudim.tempDisableSpellCheck = true;
 			console.debug('Temporarily disable spell checking');
-		}
+		}*/
+		Mudim.tempDisableSpellCheck = set;
 		return;
 	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
@@ -1425,6 +1431,8 @@ Mudim.w = 0;
 Mudim.tempOff = false;
 Mudim.tempDisableSpellCheck = false;
 Mudim.lastTempDisableSpellCheck = false;
+Mudim.ctrlSerie = false;
+Mudim.shiftSerie = false;
 /**
 * Head consonants
 */

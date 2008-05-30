@@ -769,24 +769,29 @@ CHIM.KeyHandler = function(e) {
 CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) {e = window.event;}
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLetf ) {
+	if (CHIM.IsHotkey(e,e.keyCode)) {return;}
+	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLeft ) {
 		var set;
 		if (e.keyCode == CHIM.VK_SHIFT) {
 			set = true;
 		} else {
 			set = false;
 		}
+		/*
 		if (!Mudim.tempOff && set) {
 			Mudim.tempOff = true;
-		}
+		}*/
+		Mudim.tempOff = set;
 		if (e.keyCode == CHIM.VK_CTRL) {
 			set = true;
 		} else {
 			set = false;
 		}
+		/*
 		if (!Mudim.tempDisableSpellCheck && set) {
 			Mudim.tempDisableSpellCheck = true;
-		}
+		}*/
+		Mudim.tempDisableSpellCheck = set;
 		return;
 	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
