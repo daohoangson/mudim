@@ -892,7 +892,7 @@ CHIM.KeyUp = function(e) {
 			Mudim.ctrlSerie = 0;
 		}
 	}
-}
+};
 //----------------------------------------------------------------------------
 // Function: KeyDown
 //	Handle the key down event
