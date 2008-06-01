@@ -401,13 +401,17 @@ CHIM.BackSpace = function() {
 CHIM.ClearBuffer = function() {
 	CHIM.off = 0;
 	Mudim.w=0;
-	CHIM.buffer = [];
 	CHIM.Speller.Clear();
 	Mudim.ResetAccentInfo();
-	Mudim.headConsonants='';
 	Mudim.tailConsonants='';
-	Mudim.tempOff = false;
-	Mudim.tempDisableSpellCheck = false;
+	Mudim.headConsonants='';
+	Mudim.ctrlSerie = 0;
+	Mudim.shiftSerie = 0;
+	if (CHIM.buffer.length>0) {
+		Mudim.tempOff = false;
+		Mudim.tempDisableSpellCheck = false;		
+	}
+	CHIM.buffer = [];
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -759,6 +763,22 @@ CHIM.KeyHandler = function(e) {
 		CHIM.ProcessControlKey( keyCode, true );
 	}
 };
+CHIM.KeyUp = function(e) {
+	var target = null;
+	if ( e == null ) {e = window.event;}
+	if ( e.keyCode == CHIM.VK_SHIFT ) {
+		if (Mudim.shiftSerie == 1) {
+			Mudim.tempOff = true;
+			Mudim.shiftSerie = 0;
+		}
+	}
+	if ( e.keyCode == CHIM.VK_CTRL ) {
+		if (Mudim.ctrlSerie == 1) {
+			Mudim.tempDisableSpellCheck = true;
+			Mudim.ctrlSerie = 0;
+		}
+	}
+}
 //----------------------------------------------------------------------------
 // Function: KeyDown
 //	Handle the key down event
@@ -829,10 +849,12 @@ CHIM.Attach = function(e) {
 			if (e.designMode=="on" || e.designMode=="off") {		//iframe
 				e.addEventListener("keypress",CHIM.KeyHandler,true);
 				e.addEventListener("keydown",CHIM.KeyDown,true);
+				e.addEventListener("keyup",CHIM.KeyUp,true);
 				e.addEventListener("mousedown",CHIM.MouseDown,true);
 			} else {			//root document
 				e.onkeypress=CHIM.KeyHandler;
 				e.onkeydown=CHIM.KeyDown;
+				e.onkeyup=CHIM.KeyUp;
 				e.onmousedown=CHIM.MouseDown;
 			}
 		} catch(ex) {}
@@ -991,6 +1013,8 @@ Mudim.IGNORE_ID = [];
 Mudim.tempOff = false;
 Mudim.tempDisableSpellCheck = false;
 Mudim.lastTempDisableSpellCheck = false;
+Mudim.ctrlSerie = 0;
+Mudim.shiftSerie = 0;
 //----------------------------------------------------------------------------
 
 Mudim.StatusBarClicked = function(e) {

@@ -467,15 +467,17 @@ CHIM.BackSpace = function() {
 CHIM.ClearBuffer = function() {
 	CHIM.off = 0;
 	Mudim.w=0;
-	CHIM.buffer = [];
 	CHIM.Speller.Clear();
 	Mudim.ResetAccentInfo();
 	Mudim.tailConsonants='';
 	Mudim.headConsonants='';
-	Mudim.tempOff = false;
-	Mudim.tempDisableSpellCheck = false;
-	Mudim.ctrlSerie = false;
-	Mudim.shiftSerie = false;
+	Mudim.ctrlSerie = 0;
+	Mudim.shiftSerie = 0;
+	if (CHIM.buffer.length>0) {
+		Mudim.tempOff = false;
+		Mudim.tempDisableSpellCheck = false;		
+	}
+	CHIM.buffer = [];
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.SetDisplay
@@ -868,6 +870,29 @@ CHIM.KeyHandler = function(e) {
 		CHIM.ProcessControlKey( keyCode, true );
 	}
 };
+/**
+*Catch keyup event to implement escaping Mudim for current word
+*@param (object) e Event passed by browser
+*/
+CHIM.KeyUp = function(e) {
+	var target = null;
+	if ( e == null ) {e = window.event;}
+	if ( e.keyCode == CHIM.VK_SHIFT ) {
+		if (Mudim.shiftSerie == 1) {
+			console.debug('Temporarily turn off');
+			Mudim.tempOff = true;
+			Mudim.shiftSerie = 0;
+		}
+	}
+	console.debug('shift: '+Mudim.shiftSerie+' || turnOff: '+Mudim.tempOff);
+	if ( e.keyCode == CHIM.VK_CTRL ) {
+		if (Mudim.ctrlSerie == 1) {
+			console.debug('Temporarily disable spell checking');
+			Mudim.tempDisableSpellCheck = true;
+			Mudim.ctrlSerie = 0;
+		}
+	}
+}
 //----------------------------------------------------------------------------
 // Function: KeyDown
 //	Handle the key down event
@@ -879,30 +904,22 @@ CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) {e = window.event;}
 	if (CHIM.IsHotkey(e,e.keyCode)) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLeft ) {
-		var set;
-		if (e.keyCode == CHIM.VK_SHIFT) {
-			set = true;
-		} else {
-			set = false;
+	if (e.altKey || e.altLeft) {
+		return;
+	}
+	//alert(e.shiftKey+' | '+e.shiftLeft);
+	if ( e.shiftKey || e.shiftLeft || e.metaKey ) {
+		Mudim.shiftSerie |= 1;		//Shift pressed
+		if (e.keyCode != CHIM.VK_SHIFT) {	// Shift-x
+			Mudim.shiftSerie |= 2;	
 		}
-		/*
-		if (!Mudim.tempOff && set) {
-			Mudim.tempOff = true;
-			console.debug('Temporarily switch off');
-		}*/
-		Mudim.tempOff = set;
-		if (e.keyCode == CHIM.VK_CTRL) {
-			set = true;
-		} else {
-			set = false;
+		return;
+	}
+	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) {
+		Mudim.ctrlSerie |= 1;		//Ctrl pressed
+		if (e.keyCode != CHIM.VK_CTRL) {	// Ctrl-x
+			Mudim.ctrlSerie |= 2;	
 		}
-		/*
-		if (!Mudim.tempDisableSpellCheck && set) {
-			Mudim.tempDisableSpellCheck = true;
-			console.debug('Temporarily disable spell checking');
-		}*/
-		Mudim.tempDisableSpellCheck = set;
 		return;
 	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
@@ -939,17 +956,20 @@ CHIM.Attach = function(e, r) {
 			if (!r) {
 				if (!window.opera && document.all) { // IE
 					e.attachEvent('onkeydown', CHIM.KeyDown);
+					e.attachEvent('onkeyup', CHIM.KeyUp);
 					e.attachEvent('onkeypress', CHIM.KeyHandler);
 					e.attachEvent('onmousedown', CHIM.MouseDown);
 				}
 				else { // Moz & others
 					e.addEventListener('keydown', CHIM.KeyDown, false);
+					e.addEventListener('keyup', CHIM.KeyUp, false);
 					e.addEventListener('keypress', CHIM.KeyHandler, false);
 					e.addEventListener('mousedown', CHIM.MouseDown, false);
 				}
 			}
 			else {
 				e.onkeydown = CHIM.KeyDown;
+				e.onkeyup = CHIM.KeyUp;
 				e.onkeypress = CHIM.KeyHandler;
 				e.onmousedown = CHIM.MouseDown;
 			}
@@ -1424,15 +1444,42 @@ Mudim.method = 4;
 * Use the new accent rule
 */
 Mudim.newAccentRule = true;
+/**
+*Last used method
+*/
 Mudim.oldMethod = 4;
+/**
+*Visibility of panel. Assign to this variable to set default value
+*/
 Mudim.showPanel = true;
+/**
+*
+*/
 Mudim.accent=[-1,0,null,-1];	//[position, code, substitution table, index]
+/**
+*
+*/
 Mudim.w = 0;
+/**
+*Temporarily turn Mudim off for current word
+*/
 Mudim.tempOff = false;
+/**
+*Temporarily disable spell checking for current word
+*/
 Mudim.tempDisableSpellCheck = false;
+/**
+*Last state of tempDisableSpellCheck
+*/
 Mudim.lastTempDisableSpellCheck = false;
-Mudim.ctrlSerie = false;
-Mudim.shiftSerie = false;
+/**
+*Indicate CTRL is being pressed
+*/
+Mudim.ctrlSerie = 0;
+/**
+*Indicate SHIFT is being pressed
+*/
+Mudim.shiftSerie = 0;
 /**
 * Head consonants
 */
@@ -1453,7 +1500,13 @@ Mudim.COLOR='Black';
 * Control panel background color
 */
 Mudim.PANEL_BACKGROUND='lightYellow';
+/**
+*Phrases used in panel
+*/
 Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+/**
+*Array containing ID of elements which doesn't need Vietnamese typing
+*/
 Mudim.IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
