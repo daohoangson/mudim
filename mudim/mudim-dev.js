@@ -475,7 +475,8 @@ CHIM.ClearBuffer = function() {
 	Mudim.shiftSerie = 0;
 	if (CHIM.buffer.length>0) {
 		Mudim.tempOff = false;
-		Mudim.tempDisableSpellCheck = false;		
+		Mudim.tempDisableSpellCheck = false;	
+		console.trace();
 	}
 	CHIM.buffer = [];
 };
@@ -848,12 +849,11 @@ CHIM.KeyHandler = function(e) {
 			if (l==0) {
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
 			}
-			if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
+			if (Mudim.newTempDisableSpellCheckRequest) {
 				CHIM.ClearBuffer();
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
-				Mudim.tempDisableSpellCheck = true;
+				Mudim.newTempDisableSpellCheckRequest = false;
 			}
-			Mudim.lastTempDisableSpellCheck = Mudim.tempDisableSpellCheck;
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
 				if (e.preventDefault) {e.preventDefault();}
@@ -875,7 +875,6 @@ CHIM.KeyHandler = function(e) {
 *@param (object) e Event passed by browser
 */
 CHIM.KeyUp = function(e) {
-	var target = null;
 	if ( e == null ) {e = window.event;}
 	if ( e.keyCode == CHIM.VK_SHIFT ) {
 		if (Mudim.shiftSerie == 1) {
@@ -884,14 +883,15 @@ CHIM.KeyUp = function(e) {
 			Mudim.shiftSerie = 0;
 		}
 	}
-	console.debug('shift: '+Mudim.shiftSerie+' || turnOff: '+Mudim.tempOff);
 	if ( e.keyCode == CHIM.VK_CTRL ) {
 		if (Mudim.ctrlSerie == 1) {
 			console.debug('Temporarily disable spell checking');
 			Mudim.tempDisableSpellCheck = true;
 			Mudim.ctrlSerie = 0;
+			Mudim.newTempDisableSpellCheckRequest = true;
 		}
 	}
+	console.debug('ctrl: '+Mudim.ctrlSerie+' || tempDis: '+Mudim.tempDisableSpellCheck);
 };
 //----------------------------------------------------------------------------
 // Function: KeyDown
@@ -907,7 +907,6 @@ CHIM.KeyDown = function(e) {
 	if (e.altKey || e.altLeft) {
 		return;
 	}
-	//alert(e.shiftKey+' | '+e.shiftLeft);
 	if ( e.shiftKey || e.shiftLeft || e.metaKey ) {
 		Mudim.shiftSerie |= 1;		//Shift pressed
 		if (e.keyCode != CHIM.VK_SHIFT) {	// Shift-x
@@ -1471,7 +1470,7 @@ Mudim.tempDisableSpellCheck = false;
 /**
 *Last state of tempDisableSpellCheck
 */
-Mudim.lastTempDisableSpellCheck = false;
+Mudim.newTempDisableSpellCheckRequest = false;
 /**
 *Indicate CTRL is being pressed
 */

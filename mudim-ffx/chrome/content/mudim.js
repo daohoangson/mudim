@@ -144,10 +144,6 @@ Mudim.CheckSpell = function(key, grp) {
 	var b = CHIM.buffer;
 	var len = b.length;
 	var n = key.toLowerCase();
-	if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
-		CHIM.ClearBuffer();
-		Mudim.tempDisableSpellCheck = true;
-	}
 	if (CHIM.Speller.enabled && !Mudim.tempDisableSpellCheck) {
 		// Rule based on the ending consonants
 		if (grp > 0 && CHIM.off == 0) {
@@ -741,12 +737,11 @@ CHIM.KeyHandler = function(e) {
 			if (l==0) {
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
 			}
-			if (!Mudim.lastTempDisableSpellCheck && Mudim.tempDisableSpellCheck) {
+			if (Mudim.newTempDisableSpellCheckRequest) {
 				CHIM.ClearBuffer();
 				Mudim.startWordOffset=CHIM.GetCursorPosition(target);
-				Mudim.tempDisableSpellCheck = true;
+				Mudim.newTempDisableSpellCheckRequest = false;
 			}
-			Mudim.lastTempDisableSpellCheck = Mudim.tempDisableSpellCheck;
 			if (CHIM.AddKey(key) ) {
 				if (e.stopPropagation) {e.stopPropagation();}
 				if (e.preventDefault) {e.preventDefault();}
@@ -764,7 +759,6 @@ CHIM.KeyHandler = function(e) {
 	}
 };
 CHIM.KeyUp = function(e) {
-	var target = null;
 	if ( e == null ) {e = window.event;}
 	if ( e.keyCode == CHIM.VK_SHIFT ) {
 		if (Mudim.shiftSerie == 1) {
@@ -776,6 +770,7 @@ CHIM.KeyUp = function(e) {
 		if (Mudim.ctrlSerie == 1) {
 			Mudim.tempDisableSpellCheck = true;
 			Mudim.ctrlSerie = 0;
+			Mudim.newTempDisableSpellCheckRequest = true;
 		}
 	}
 }
@@ -790,28 +785,21 @@ CHIM.KeyDown = function(e) {
 	var target = null;
 	if ( e == null ) {e = window.event;}
 	if (CHIM.IsHotkey(e,e.keyCode)) {return;}
-	if ( e.ctrlKey || e.ctrlLeft || e.altKey || e.altLeft || e.metaKey || e.shiftKey || e.shiftLeft ) {
-		var set;
-		if (e.keyCode == CHIM.VK_SHIFT) {
-			set = true;
-		} else {
-			set = false;
+	if (e.altKey || e.altLeft) {
+		return;
+	}
+	if ( e.shiftKey || e.shiftLeft || e.metaKey ) {
+		Mudim.shiftSerie |= 1;		//Shift pressed
+		if (e.keyCode != CHIM.VK_SHIFT) {	// Shift-x
+			Mudim.shiftSerie |= 2;	
 		}
-		/*
-		if (!Mudim.tempOff && set) {
-			Mudim.tempOff = true;
-		}*/
-		Mudim.tempOff = set;
-		if (e.keyCode == CHIM.VK_CTRL) {
-			set = true;
-		} else {
-			set = false;
+		return;
+	}
+	if ( e.ctrlKey || e.ctrlLeft || e.metaKey ) {
+		Mudim.ctrlSerie |= 1;		//Ctrl pressed
+		if (e.keyCode != CHIM.VK_CTRL) {	// Ctrl-x
+			Mudim.ctrlSerie |= 2;	
 		}
-		/*
-		if (!Mudim.tempDisableSpellCheck && set) {
-			Mudim.tempDisableSpellCheck = true;
-		}*/
-		Mudim.tempDisableSpellCheck = set;
 		return;
 	}
 	if ( !(target = CHIM.GetTarget(e)) || !CHIM.peckable || CHIM.Freeze(target) ) {return;}
@@ -1012,7 +1000,7 @@ Mudim.typeInUrlBar = false;
 Mudim.IGNORE_ID = [];
 Mudim.tempOff = false;
 Mudim.tempDisableSpellCheck = false;
-Mudim.lastTempDisableSpellCheck = false;
+Mudim.newTempDisableSpellCheckRequest = false;
 Mudim.ctrlSerie = 0;
 Mudim.shiftSerie = 0;
 //----------------------------------------------------------------------------
