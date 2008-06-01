@@ -1121,7 +1121,7 @@ Mudim.FindAccentPos = function(nKey) {
 				switch(b[i]) {
 					case CHIM.CHAR_a:
 					case CHIM.CHAR_A:
-						if (!Mudim.newAccentRule) i--;
+						if (!Mudim.newAccentRule && (l==2 || (l==1 && Mudim.GetMarkTypeID(k,1)!=1))) i--;
 						break;
 					case CHIM.CHAR_e:
 					case CHIM.CHAR_E:
