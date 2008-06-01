@@ -475,8 +475,7 @@ CHIM.ClearBuffer = function() {
 	Mudim.shiftSerie = 0;
 	if (CHIM.buffer.length>0) {
 		Mudim.tempOff = false;
-		Mudim.tempDisableSpellCheck = false;	
-		console.trace();
+		Mudim.tempDisableSpellCheck = false;
 	}
 	CHIM.buffer = [];
 };
