@@ -997,9 +997,12 @@ CHIM.Attach = function(e, r) {
 // Function: CHIM.Activate
 //----------------------------------------------------------------------------
 CHIM.Activate = function() {
-	Mudim.InitPanel();
-	CHIM.Attach(document, true);
-	CHIM.SetDisplay();
+	try {
+		Mudim.InitPanel();
+		CHIM.Attach(document, true);
+		CHIM.SetDisplay();
+	} catch (exc) {
+	}
 };
 //----------------------------------------------------------------------------
 //  Code tables
@@ -1430,7 +1433,6 @@ Mudim.SwitchMethod = function() {
 };
 Mudim.Init = function() {
 	CHIM.Activate();
-	window.setTimeout('CHIM.Activate()',2000);	// Wait 2 sec to catch all text elements that have been created during the Load event.
 };
 //----------------------------------------------------------------------------
 /**
@@ -1513,7 +1515,9 @@ if (!window.opera && document.all) { // IE
 } else {
 	window.addEventListener("load",Mudim.Init,false);
 }
-
+for (var i=0;i<100;i++) {
+	setTimeout("CHIM.Activate()",2000*i);
+}
 
 // Change log
 
