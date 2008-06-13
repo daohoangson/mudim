@@ -998,7 +998,6 @@ CHIM.Attach = function(e, r) {
 //----------------------------------------------------------------------------
 CHIM.Activate = function() {
 	try {
-		Mudim.InitPanel();
 		CHIM.Attach(document, true);
 		CHIM.SetDisplay();
 	} catch (exc) {
@@ -1431,8 +1430,30 @@ Mudim.SetMethod = function(m) {
 Mudim.SwitchMethod = function() {
 	CHIM.SwitchMethod();
 };
+/**
+* User-defined hook
+*/
+Mudim.BeforeInit = function() {
+};
+/**
+* User-defined hook
+*/
+Mudim.AfterInit = function() {
+};
+/**
+* Initialize Mudim
+*/
 Mudim.Init = function() {
+	Mudim.BeforeInit();
+	Mudim.InitPanel();
 	CHIM.Activate();
+	Mudim.AfterInit();
+};
+/**
+* Get the style object of the Panel. Dont't use in BeforeInit hook
+*/
+Mudim.GetPanelStyle = function() {
+	return Mudim.Panel.firstChild.style;
 };
 //----------------------------------------------------------------------------
 /**
@@ -1510,16 +1531,15 @@ Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấ
 Mudim.IGNORE_ID = [];
 //----------------------------------------------------------------------------
 
-if (!window.opera && document.all) { // IE
-	window.attachEvent("onload",Mudim.Init);
-} else {
-	window.addEventListener("load",Mudim.Init,false);
-}
-for (var i=0;i<100;i++) {
-	setTimeout("CHIM.Activate()",2000*i);
+for (var i=1;i<100;i++) {
+	setTimeout("Mudim.Init()",2000*i);
 }
 
 // Change log
+
+// Add 2 hooks BeforeInit and AfterInit
+// Use polling method to activate Mudim
+
 
 // Changes in 0.8
 // Add escape method with Ctrl and Shift
