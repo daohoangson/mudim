@@ -211,7 +211,7 @@ Mudim.CheckSpell = function(key, grp) {
 					} else {
 						CHIM.Speller.Set(len, key);
 						if (n == 'y') {
-							if ('hklms'.indexOf(lkey) < 0) {
+							if ('hklmst'.indexOf(lkey) < 0) {
 								CHIM.off = len;
 							}
 						} else if (n=='e' || n=='i') {
