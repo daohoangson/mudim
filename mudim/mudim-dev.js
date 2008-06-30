@@ -1361,6 +1361,7 @@ Mudim.SetPreference = function() {
 	var value= CHIM.Speller.enabled ? value + 8 : value;
 	value = Mudim.newAccentRule ? value + 16 : value;
 	value = Mudim.showPanel ? value + 32 : value;
+	value += Mudim.displayMode * 64;
 	document.cookie='|mudim-settings='+value+tail;
 	console.debug('Cookie value written : |mudim-settings='+value+tail);
 };
@@ -1379,11 +1380,7 @@ Mudim.GetPreference = function() {
 		CHIM.Speller.enabled = (value & 8) ? true : false;
 		CHIM.newAccentRule = (value & 16) ? true : false;
 		Mudim.showPanel = (value & 32) ? true : false;
-	}
-	if (Mudim.showPanel) {
-		Mudim.ShowPanel();
-	} else {
-		Mudim.HidePanel();
+		Mudim.displayMode = (value & 64)>>6;
 	}
 };
 //----------------------------------------------------------------------------
@@ -1410,12 +1407,19 @@ Mudim.HidePanel = function() {
 };
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
-		var f=document.createElement('div');
-		f.innerHTML='<div id="mudimPanel" style="border-bottom: 1px solid black; padding: 3px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; position: fixed; top: 0; right: 0; width: 100%; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method">Mudim</a> v0.8 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[8]+'</a> (F8) ]</div>';
-		f.style.display = 'None';
-		document.body.insertBefore(f,document.body.firstChild);
-		Mudim.Panel=f;
 		Mudim.GetPreference();
+		Mudim.panels = ['<div id="mudimPanel" style="position: fixed; bottom: 0; right:0; left:0; width: 100%; border: 1px solid black; padding: 1px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method" onclick="Mudim.ToggleDisplayMode();return false;">Mudim</a> v0.8 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[8]+'</a> (F8) ]</div>',
+						'<div id="mudimPanel" style="position: fixed; bottom: 0; right: 0; width: 50px; border: 1px solid black; padding: 1px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; filter:alpha(opacity=80); opacity:.80;  text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method" onclick="Mudim.ToggleDisplayMode();return false;">Mudim</a></div>'];
+		var f=document.createElement('div');
+		f.innerHTML=Mudim.panels[Mudim.displayMode];
+		f.style.display = 'None';
+		document.body.insertBefore(f,document.body.lastChild);
+		Mudim.Panel=f;
+		if (Mudim.showPanel) {
+			Mudim.ShowPanel();
+		} else {
+			Mudim.HidePanel();
+		}
 	}
 };
 Mudim.ToggleSpeller = function() {
@@ -1423,6 +1427,17 @@ Mudim.ToggleSpeller = function() {
 };
 Mudim.Toggle = function() {
 	CHIM.Toggle();
+};
+Mudim.ToggleDisplayMode = function() {
+	if (Mudim.displayMode) {
+		Mudim.displayMode = 0;
+	} else {
+		Mudim.displayMode = 1;
+	}
+	Mudim.BeforeInit();
+	Mudim.Panel.innerHTML=Mudim.panels[Mudim.displayMode];
+	Mudim.AfterInit();
+	Mudim.SetPreference();
 };
 Mudim.SetMethod = function(m) {
 	CHIM.SetMethod(m);
@@ -1524,11 +1539,20 @@ Mudim.PANEL_BACKGROUND='lightYellow';
 /**
 *Phrases used in panel
 */
-Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
+Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện'];
 /**
 *Array containing ID of elements which doesn't need Vietnamese typing
 */
 Mudim.IGNORE_ID = [];
+/**
+*Panel display mode. 0 = full; 1 = minimized
+*/
+Mudim.displayMode = 0;
+/**
+*Panel's HTML content for each display mode
+*/
+Mudim.panels = ['',''];
+Mudim.REV = 140;
 //----------------------------------------------------------------------------
 
 for (var i=1;i<100;i++) {
@@ -1537,6 +1561,8 @@ for (var i=1;i<100;i++) {
 
 // Change log
 
+// Add display modes (full and minimized)
+// Move panel from top to bottom of the page
 // Add 2 hooks BeforeInit and AfterInit
 // Use polling method to activate Mudim
 

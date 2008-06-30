@@ -1,6 +1,6 @@
 Mudim.BeforeInit = function() {
 	//Mudim.COLOR='Black';
-	//Mudim.PANEL_BACKGROUND='lightYellow';
+	//Mudim.PANEL_BACKGROUND='lightBlue';
 	//Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện bảng điều khiển'];
 	Mudim.IGNORE_ID = ['email'];
 };
