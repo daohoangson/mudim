@@ -23,7 +23,7 @@
 // Development environment: Firefox with Firebug extension with console debug
 if (typeof(console)=='undefined') {	//if console doesnt exist, use the annoying alert instead
 	console=function () {return this;};	// console.debug   <--- instruct the build script remove this line
-	console.debug = function (a) {alert(a);};		
+	console.debug = function (a) {alert(a)};		
 }
 
 //----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ Mudim = function() {
 //----------------------------------------------------------------------------
 // Constants:
 //----------------------------------------------------------------------------
-Mudim.DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr','mudim-auto'];
+Mudim.DISPLAY_ID=['mudim-off','mudim-vni','mudim-telex','mudim-viqr','mudim-mix','mudim-auto'];
 Mudim.SPELLCHECK_ID='mudim-checkspell';
 Mudim.ACCENTRULE_ID='mudim-accentrule';
 CHIM.CHAR_A = 'A';
@@ -344,6 +344,7 @@ CHIM.AddKey = function( key ) {
 	var count = CHIM.buffer.length;
 	var m = CHIM.modes[ Mudim.method-1 ], n;
 	var v = null;
+	var autoModeProbe = false;
 	console.debug('|%s| (Begin AddKey)',CHIM.buffer);
 	if( !count || CHIM.off != 0 || Mudim.tempOff) {
 		if (Mudim.CheckSpell(key,l)) {
@@ -361,14 +362,27 @@ CHIM.AddKey = function( key ) {
 		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
+	if (Mudim.method == 5) {	//Auto detect
+		Mudim.method = Mudim.AutoDetectMode(n);
+		console.debug("Method detected: "+Mudim.method);
+		autoModeProbe = true;
+	}
 	if ((p=Mudim.FindAccentPos(n))<0) {
 		console.debug('Appropriate accent position not found, just append');
+		if (autoModeProbe) {
+			Mudim.method = 5;
+			autoModeProbe = false;
+		}
 		Mudim.CheckSpell(key,0);
 		return CHIM.Append(count, c, key);
 	}
 	console.debug('Found mark position: %d',p);
 	Mudim.lord='dz';
 	if (Mudim.CheckSpell(key,l)) {
+		if (autoModeProbe) {
+			Mudim.method = 5;
+			autoModeProbe = false;
+		}
 		return CHIM.Append(count, c, key);
 	}
 	c=b[p];
@@ -417,7 +431,17 @@ CHIM.AddKey = function( key ) {
 	if( !found ) {
 		console.debug('Mark isnt compatible with this position');
 		Mudim.CheckSpell(key,0);
+		if (autoModeProbe) {
+			console.debug("Change back to method 5");
+			Mudim.method = 5;
+		}
+		autoModeProbe = false;
 		return CHIM.Append(count, c, key);
+	} else {
+		if (autoModeProbe) {
+			CHIM.SetDisplay();
+		}
+		autoModeProbe = false;
 	}
 	if (CHIM.off!=0) {
 		console.debug('Push the key into buffer due to double mark');
@@ -487,7 +511,7 @@ CHIM.SetDisplay = function() {
 	if ( typeof(Mudim.DISPLAY_ID) != "undefined" && Mudim.method < Mudim.DISPLAY_ID.length ) {
 		var r;
 		//Clear all button. This is needed by only the lazy rendering engine of my Konqueror
-		for (var i=0;i<4;i++) {
+		for (var i=0;i<5;i++) {
 			r=document.getElementById(Mudim.DISPLAY_ID[i]);
 			if (r) {r.checked = false;}
 		}
@@ -510,7 +534,7 @@ CHIM.SetDisplay = function() {
 //----------------------------------------------------------------------------
 CHIM.SwitchMethod = function() {
 	CHIM.ClearBuffer();
-	Mudim.method = (++Mudim.method % 5);
+	Mudim.method = (++Mudim.method % 6);
 	CHIM.SetDisplay();
 	Mudim.SetPreference();
 };
@@ -1083,7 +1107,8 @@ CHIM.modes=[
 	[[['6',0,1,2],['7',4,5],['8',3],['9',6]],'6789','012345'],
 	[[['a',0],['e',1],['o',2],['w',3,4,5],['d',6]],'ewoda','zsfrxj'],
 	[[['^',0,1,2],['+',4,5],['(',3],['d',6]],'^+(d',"='`?~."],
-	[[['6',0,1,2],['7',4,5],['8',3],['9',6],['a',0],['e',1],['o',2],['w',3,4,5],['d',6]],'6789ewoda',"0123456zsfrxj"]
+	[[['6',0,1,2],['7',4,5],['8',3],['9',6],['a',0],['e',1],['o',2],['w',3,4,5],['d',6]],'6789ewoda',"012345zsfrxj"],
+	[[['6',0,1,2],['7',4,5],['8',3],['9',6],['a',0],['e',1],['o',2],['w',3,4,5],['d',6],['^',0,1,2],['+',4,5],['(',3],['d',6]],'6789ewoda^+(d',"012345zsfrxj='`?~."]
 ];
 //----------------------------------------------------------------------------
 CHIM.UI=[
@@ -1350,6 +1375,33 @@ Mudim.GetMarkTypeID = function (key,group) {
 		return j;
 	}
 };
+/**
+* Auto detect typing mode based on current character
+* @param(char) c Current character
+*@return  typing mode
+*/
+Mudim.AutoDetectMode = function(c) {
+	var gi;
+	if ((gi = CHIM.modes[4][1].indexOf(c))>=0) {
+		if (gi<4) {
+			return 1;
+		} else if (gi<9) {
+			return 2;
+		} else {
+			return 3;
+		}
+	} else if ((gi = CHIM.modes[4][2].indexOf(c))>=0) {
+		if (gi<6) {
+			return 1;
+		} else if (gi<12) {
+			return 2;
+		} else {
+			return 3;
+		}
+	} else {
+		return 0;
+	}
+};
 //----------------------------------------------------------------------------
 // Function: Mudim.SetPreference()
 //----------------------------------------------------------------------------
@@ -1408,7 +1460,7 @@ Mudim.HidePanel = function() {
 Mudim.InitPanel = function() {
 	if (!Mudim.Panel) {
 		Mudim.GetPreference();
-		Mudim.panels = ['<div id="mudimPanel" style="position: fixed; bottom: 0; right:0; left:0; width: 100%; border: 1px solid black; padding: 1px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method" onclick="Mudim.ToggleDisplayMode();return false;">Mudim</a> v0.8 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[5]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[6]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[7]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[8]+'</a> (F8) ]</div>',
+		Mudim.panels =['<div id="mudimPanel" style="position: fixed; bottom: 0; right:0; left:0; width: 100%; border: 1px solid black; padding: 1px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method" onclick="Mudim.ToggleDisplayMode();return false;">Mudim</a> v0.8 <input name="mudim" id="mudim-off" onclick="Mudim.SetMethod(0);" type="radio">'+Mudim.LANG[0]+'<input name="mudim" id="mudim-vni" onclick="Mudim.SetMethod(1);" type="radio"> '+Mudim.LANG[1]+' <input name="mudim" id="mudim-telex" onclick="Mudim.SetMethod(2);" type="radio"> '+Mudim.LANG[2]+' <input name="mudim" id="mudim-viqr" onclick="Mudim.SetMethod(3);" type="radio"> '+Mudim.LANG[3]+' <input name="mudim" id="mudim-mix" onclick="Mudim.SetMethod(4);" type="radio"> '+Mudim.LANG[4]+' <input name="mudim" id="mudim-auto" onclick="Mudim.SetMethod(5);" type="radio"> '+Mudim.LANG[5]+' <input id="mudim-checkspell" onclick="javascript:Mudim.ToggleSpeller();" type="checkbox">'+Mudim.LANG[6]+'<input id="mudim-accentrule" onclick="javascript:Mudim.ToggleAccentRule();" type="checkbox">'+Mudim.LANG[7]+' [&nbsp;<a href="#" onclick="Mudim.Toggle();return false;">'+Mudim.LANG[8]+'</a> (F9) <a href="#" onclick="Mudim.TogglePanel();return false;">'+Mudim.LANG[9]+'</a> (F8) ]</div>',
 						'<div id="mudimPanel" style="position: fixed; bottom: 0; right: 0; width: 50px; border: 1px solid black; padding: 1px; background: '+Mudim.PANEL_BACKGROUND+'; color:'+Mudim.COLOR+'; z-index:100; text-align: center; font-size: 10pt;"><a href="http://mudim.googlecode.com" title="Mudzot\'s Input Method" onclick="Mudim.ToggleDisplayMode();return false;">Mudim</a></div>'];
 		var f=document.createElement('div');
 		f.innerHTML=Mudim.panels[Mudim.displayMode];
@@ -1539,7 +1591,7 @@ Mudim.PANEL_BACKGROUND='lightYellow';
 /**
 *Phrases used in panel
 */
-Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện'];
+Mudim.LANG=['Tắt','VNI','Telex','Viqr','Tổng hợp','Tự động','Chính tả','Bỏ dấu kiểu mới','Bật/Tắt','Ẩn/Hiện'];
 /**
 *Array containing ID of elements which doesn't need Vietnamese typing
 */
