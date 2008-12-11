@@ -658,8 +658,21 @@ CHIM.SetCursorPosition = function(target, p) {
 	} else if (target.createTextRange) {
 		var range = target.createTextRange();
 		range.collapse(true);
-		range.moveEnd('character', p);
+        // odd behaviour each 4th times when a mark is put at the end of line
+        var i;
+        var dec = 0;
+        for (i = 0; i<p; i++) {
+            if ((target.value.charCodeAt(i) == 10) || (target.value.charCodeAt(i) == 13)) {
+                if (dec == 0) {
+                    --p;
+                    dec = 1;
+                }
+            } else {
+                dec = 0;
+            }
+        }
 		range.moveStart('character', p);
+		range.moveEnd('character', 0);
 		range.select();
 	}
 };
