@@ -4,7 +4,7 @@
 	<statusbar id="status-bar">
 		<statusbarpanel>
 			<box id="mudim-button" label="Mudim" onclick="Mudim.StatusBarClicked(event)">
-			<image src="chrome://mudim/skin/simple/off.png" tooltiptext="Mudim 0.8.158 - Vietnamese Input Method" id="menubutton"/>
+			<image src="chrome://mudim/skin/simple/off.png" tooltiptext="Mudim 0.8.159 - Vietnamese Input Method" id="menubutton"/>
 			<menupopup onpopupshowing="Mudim.UpdateMenu(this);" oncommand="Mudim.MenuClicked(event.target); event.stopPropagation();">
 				<menuitem label="Mixed" type="checkbox" value="4"/>
 				<menuitem label="Viqr" type="checkbox" value="3"/>
