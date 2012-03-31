@@ -1449,15 +1449,15 @@ Mudim.SetPreference = function() {
 	value = Mudim.newAccentRule ? value + 16 : value;
 	value = Mudim.showPanel ? value + 32 : value;
 	value += Mudim.displayMode * 64;
-	document.cookie='|mudim-settings='+value+tail;
-	console.debug('Cookie value written : |mudim-settings='+value+tail);
+	document.cookie=Mudim.COOKIE_KEY_NAME+'='+value+tail;
+	console.debug('Cookie value written : '+Mudim.COOKIE_KEY_NAME+'='+value+tail);
 };
 //----------------------------------------------------------------------------
 // Function: Mudim.GetPreference()
 //----------------------------------------------------------------------------
 Mudim.GetPreference = function() {
 	var c=document.cookie.split(';');
-	for (var i=0;i<c.length && c[i].indexOf('|mudim-settings')<0;i++);
+	for (var i=0;i<c.length && c[i].indexOf(Mudim.COOKIE_KEY_NAME)<0;i++);
 	if (i==c.length) {
 		CHIM.SetDisplay();
 	} else {
@@ -1639,6 +1639,7 @@ Mudim.displayMode = 0;
 *Panel's HTML content for each display mode
 */
 Mudim.panels = ['',''];
+Mudim.COOKIE_KEY_NAME = '|mudim-settings';
 Mudim.REV = 153;
 //----------------------------------------------------------------------------
 
