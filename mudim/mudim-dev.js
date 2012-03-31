@@ -785,6 +785,28 @@ CHIM.HTMLEditor.GetRange = function(target) {
 			win.getSelection().getRangeAt(0);
 };
 //----------------------------------------------------------------------------
+// Function: CHIM.HTMLEditor.SetRange
+//----------------------------------------------------------------------------
+CHIM.HTMLEditor.SetRange = function(target, range, container, offset) {
+	range.setEnd(container, offset);
+	range.setStart(container, offset);
+
+	var latestRange = CHIM.HTMLEditor.GetRange(target);
+	if (latestRange == range) {
+		// look like the range has been updated correctly
+	} else {
+		console.debug('Failed to update existing Range object, force push it now!');
+		var win = target.parentNode.iframe.contentWindow;
+		if (!window.opera && document.all) {
+			// TODO
+		} else {
+			var selection = win.getSelection();
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	}
+};
+//----------------------------------------------------------------------------
 // Function: CHIM.HTMLEditor.GetCurrentWord
 //----------------------------------------------------------------------------
 CHIM.HTMLEditor.GetCurrentWord = function(target) {
@@ -834,8 +856,8 @@ CHIM.HTMLEditor.Process = function(target, l) {
 	container.nodeValue = container.nodeValue.substring(0, start) +
 		b.toString().replace(/,/g,'') + container.nodeValue.substring(start + l);
 	if (l<b.length) {offset++;}
-	range.setEnd(container, offset);
-	range.setStart(container, offset);
+
+	CHIM.HTMLEditor.SetRange(target, range, container, offset);
 };
 //----------------------------------------------------------------------------
 // Function: CHIM.Freeze

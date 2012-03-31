@@ -7,7 +7,16 @@ from zipfile import *
 
 sep=os.path.sep
 debugpat=re.compile('console\.debug');
+mudimJsCreated = False
+
 def makeMudimJs():
+        global mudimJsCreated
+        if (mudimJsCreated):
+            # the js file has just been created by this script
+            # there is no reasons to make it again
+            # return now
+            return
+
         p = packer.JavaScriptPacker()
         devfile=open('mudim'+sep+'mudim-dev.js')
         script = ''
@@ -27,6 +36,8 @@ def makeMudimJs():
                 mudjs.write(line)
         mudjs.write('\n')
         mudjs.close()
+        
+        mudimJsCreated = True
     
 def makeMudimZip():
         mudzipNameList=['mudim'+sep+'index.html',\
@@ -108,6 +119,21 @@ def makeMudimJla():
         for fn in mudJlaFileList:
                 zf.write(fn[0],fn[1])
         zf.close()
+
+def makeXenForo():
+    # not sure why tabs and spaces were mixed like this...
+    # so I just use my preference (4 space, soft tab)
+    fileList = [
+        ['mudim-xenforo' + sep + 'addon-vietnamese_input_method.xml', sep + 'vietnamese_input_method.xml'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php'],
+        ['mudim' + sep + 'mudim.js', sep + 'upload' + sep + 'js' + sep + 'vim' + sep + 'mudim.js']
+    ]
+    zf = ZipFile('mudim-xenforo' + sep + 'mudim-xenforo.zip', 'w', ZIP_DEFLATED)
+    for file in fileList:
+        zf.write(file[0], file[1])
+    zf.close()
         
 def printUsage():
 	print '''
@@ -120,6 +146,7 @@ Usage:
                 ffx: make firefox extension mudim.xpi
                 wwp: make wordpress plugin mudim-wwp.zip
                 vbb: make vbulletin plugin mudim-vbb.zip
+                xenforo: make XenForo plugin mudim-xenforo.zip
                 all: make all
 	'''
 if __name__=='__main__':
@@ -131,13 +158,20 @@ if __name__=='__main__':
 				makeMudimJs()
 				makeMudimZip()
 			elif func=='ffx':
+				makeMudimJs()
 				makeMudimFfx()
 			elif func=='wpp':
+                                makeMudimJs()
                                 makeMudimWpp()
                         elif func=='vbb':
+                                makeMudimJs()
                                 makeMudimVbb()
                         elif func=='jla':
+                                makeMudimJs()
                                 makeMudimJla()
+                        elif func == 'xenforo':
+                                makeMudimJs()
+                                makeXenForo()
 			elif func=='all':
 			    makeMudimJs()
 			    makeMudimZip()
@@ -145,6 +179,7 @@ if __name__=='__main__':
 			    makeMudimWpp()
 			    makeMudimVbb()
 			    makeMudimJla()
+			    makeXenForo()
 			else:
 				printUsage()				
 	else:
