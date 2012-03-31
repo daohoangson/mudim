@@ -34,31 +34,33 @@ class VIM_Listener {
 	}
 	
 	public static function template_create($templateName, array &$params, XenForo_Template_Abstract $template) {
-		if ($template instanceof XenForo_Template_Public) {
-			// always try to preload our template (performance reason)
-			if (!defined('VIM_PRELOADED')) {
-				$template->preloadTemplate('vim');
-				define('VIM_PRELOADED', true);
-			}
-			
-			if ($templateName == 'account_preferences') {
-				$template->preloadTemplate('vim_preferences');
-			}
+		// always try to preload our template (performance reason)
+		if (!defined('VIM_PRELOADED')) {
+			$template->preloadTemplate('vim');
+			define('VIM_PRELOADED', true);
+		}
+		
+		if ($templateName == 'account_preferences') {
+			$template->preloadTemplate('vim_preferences');
+		}
+	}
+	
+	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template) {
+		if ($templateName == 'PAGE_CONTAINER') {
+			// inject our script to page footer
+			$avimTemplate = $template->create('vim', $template->getParams());
+			$rendered = $avimTemplate->render();
+			$search = '</body>';
+			$content = str_replace($search, $rendered . $search, $content);
 		}
 	}
 	
 	public static function template_hook($hookName, &$contents, array $hookParams, XenForo_Template_Abstract $template) {
-		if ($template instanceof XenForo_Template_Public) {
-			if ($hookName == 'footer') {
-				// inject our script to page footer
-				$avimTemplate = $template->create('vim', $template->getParams());
-				$contents .= $avimTemplate->render();
-			} else if ($hookName == 'account_preferences_locale') {
-				// display our preferences after the locale preferences
-				$avimTemplate = $template->create('vim_preferences', $template->getParams());
-				$avimTemplate->setParam('vim', XenForo_Visitor::getInstance()->get('vietnamese_input_method'));
-				$contents .= $avimTemplate->render();
-			}
+		if ($hookName == 'account_preferences_locale') {
+			// display our preferences after the locale preferences
+			$avimTemplate = $template->create('vim_preferences', $template->getParams());
+			$avimTemplate->setParam('vim', XenForo_Visitor::getInstance()->get('vietnamese_input_method'));
+			$contents .= $avimTemplate->render();
 		}
 	}
 }

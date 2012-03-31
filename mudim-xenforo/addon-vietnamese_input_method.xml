@@ -1,14 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="vietnamese_input_method" title="Vietnamese Input Method" version_string="201203311254" version_id="2" url="" install_callback_class="VIM_Installer" install_callback_method="install" uninstall_callback_class="VIM_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="vietnamese_input_method" title="Vietnamese Input Method" version_string="201203312015" version_id="3" url="" install_callback_class="VIM_Installer" install_callback_method="install" uninstall_callback_class="VIM_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
-  <admin_templates/>
+  <admin_templates>
+    <template title="vim"><![CDATA[<xen:comment>Please update the public version of this template if you edit it!</xen:comment>
+<xen:require js="js/vim/mudim.js" />
+<script type="text/javascript">
+	Mudim.LANG=[
+		'{xen:jsescape {xen:phrase vim_off}}',
+		'{xen:jsescape {xen:phrase vim_vni}}',
+		'{xen:jsescape {xen:phrase vim_telex}}',
+		'{xen:jsescape {xen:phrase vim_viqr}}',
+		'{xen:jsescape {xen:phrase vim_mix}}',
+		'{xen:jsescape {xen:phrase vim_auto}}',
+		'{xen:jsescape {xen:phrase vim_use_speller}}',
+		'{xen:jsescape {xen:phrase vim_use_new_accent_rule}}',
+		'{xen:jsescape {xen:phrase vim_toggle}}',
+		'{xen:jsescape {xen:phrase vim_toggle_panel}}',
+	];
+	Mudim.IGNORE_ID = ['email','url'];
+	Mudim.COOKIE_KEY_NAME = 'xf_vim|mudim-settings';
+
+	CHIM.ClearBuffer();
+	Mudim.method = parseInt('{$visitor.vietnamese_input_method.method}');
+	CHIM.Speller.enabled = parseInt('{$visitor.vietnamese_input_method.speller}') ? true : false;
+	Mudim.newAccentRule = parseInt('{$visitor.vietnamese_input_method.accentRule}') ? true : false;
+
+	<xen:if is="{$visitor.user_id} OR {$xenOptions.vim_alwaysHide}">
+		Mudim.showPanel = false;
+        	CHIM.SetDisplay();
+	    	Mudim.SetPreference();
+	</xen:if>
+</script>]]></template>
+  </admin_templates>
   <code_events/>
   <code_event_listeners>
     <listener event_id="load_class_controller" execute_order="10" callback_class="VIM_Listener" callback_method="load_class" active="1" description=""/>
     <listener event_id="template_create" execute_order="10" callback_class="VIM_Listener" callback_method="template_create" active="1" description=""/>
     <listener event_id="template_hook" execute_order="10" callback_class="VIM_Listener" callback_method="template_hook" active="1" description=""/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="VIM_Listener" callback_method="template_post_render" active="1" description=""/>
     <listener event_id="visitor_setup" execute_order="10" callback_class="VIM_Listener" callback_method="visitor_setup" active="1" description=""/>
   </code_event_listeners>
   <cron/>
@@ -20,6 +51,12 @@
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="vim" display_order="30"/>
+    </option>
+    <option option_id="vim_alwaysHide" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="vim" display_order="1000"/>
     </option>
     <option option_id="vim_method" edit_format="select" data_type="unsigned_integer" can_backup="1">
       <default_value>5</default_value>
@@ -49,6 +86,8 @@
     <phrase title="option_group_vim_description" version_id="1" version_string="1.0"><![CDATA[]]></phrase>
     <phrase title="option_vim_accentRule" version_id="1" version_string="1.0"><![CDATA[Default "Use new accent rule"]]></phrase>
     <phrase title="option_vim_accentRule_explain" version_id="1" version_string="1.0"><![CDATA[]]></phrase>
+    <phrase title="option_vim_alwaysHide" version_id="2" version_string="201203311254"><![CDATA[Always hide panel]]></phrase>
+    <phrase title="option_vim_alwaysHide_explain" version_id="2" version_string="201203311254"><![CDATA[The configuration panel is hidden with logged users but it will show up for guests. The main reason behind this is: guests will be able to configure their typing preferences (logged in user can do that in account/preferences page). If you wish to hide the panel all the time, just on this option. Guest will still be able to type with the default configuration above.]]></phrase>
     <phrase title="option_vim_method" version_id="1" version_string="1.0"><![CDATA[Default Method]]></phrase>
     <phrase title="option_vim_method_explain" version_id="1" version_string="1.0"><![CDATA[]]></phrase>
     <phrase title="option_vim_speller" version_id="1" version_string="1.0"><![CDATA[Default "Use speller feature"]]></phrase>
@@ -69,9 +108,10 @@
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="vim" version_id="1" version_string="1.0"><![CDATA[<xen:require js="js/vim/mudim.js" />
+    <template title="vim" version_id="3" version_string="201203312015"><![CDATA[<xen:comment>Please update the public version of this template if you edit it!</xen:comment>
+<xen:require js="js/vim/mudim.js" />
 <script type="text/javascript">
-	Mudim.LANG=[
+    Mudim.LANG=[
 		'{xen:jsescape {xen:phrase vim_off}}',
 		'{xen:jsescape {xen:phrase vim_vni}}',
 		'{xen:jsescape {xen:phrase vim_telex}}',
@@ -91,10 +131,10 @@
 	CHIM.Speller.enabled = parseInt('{$visitor.vietnamese_input_method.speller}') ? true : false;
 	Mudim.newAccentRule = parseInt('{$visitor.vietnamese_input_method.accentRule}') ? true : false;
 
-	<xen:if is="{$visitor.user_id}">
-		Mudim.showPanel = false;	
-		CHIM.SetDisplay();
-		Mudim.SetPreference();
+	<xen:if is="{$visitor.user_id} OR {$xenOptions.vim_alwaysHide}">
+		Mudim.showPanel = false;
+        	CHIM.SetDisplay();
+	    	Mudim.SetPreference();
 	</xen:if>
 </script>]]></template>
     <template title="vim_preferences" version_id="1" version_string="1.0"><![CDATA[<dl class="ctrlUnit">

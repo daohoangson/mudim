@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <language title="Tiếng Việt" date_format="j F Y" time_format="H:i" decimal_point="," thousands_separator="." language_code="vi-VN" text_direction="LTR" addon_id="vietnamese_input_method">
   <phrase title="option_vim_accentRule" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Mặc định bật "Bỏ dấu kiểu mới"]]></phrase>
+  <phrase title="option_vim_alwaysHide" addon_id="vietnamese_input_method" version_id="2" version_string="201203311254"><![CDATA[Luôn ẩn giao diện]]></phrase>
+  <phrase title="option_vim_alwaysHide_explain" addon_id="vietnamese_input_method" version_id="2" version_string="201203311254"><![CDATA[Giao diện cấu hình được thiết lập ẩn với thành viên và hiện với khách. Mục đích của việc này nhằm cho phép khách có thể cấu hình bộ gõ theo thói quen của mình (trong khi thành viên có thể cấu hình trong trang account/preferences). Nếu bạn muốn giao diện này luôn ẩn, hãy bật tùy chọn này. Khách vẫn có thể sử dụng bộ gõ theo cấu hình mặc định ở trên.]]></phrase>
   <phrase title="option_vim_method" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Kiểu gõ mặc định]]></phrase>
   <phrase title="option_vim_speller" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Mặc định bật "Kiểm tra chính tả"]]></phrase>
   <phrase title="vim_auto" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Tự động]]></phrase>

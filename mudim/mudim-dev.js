@@ -792,7 +792,7 @@ CHIM.HTMLEditor.SetRange = function(target, range, container, offset) {
 	range.setStart(container, offset);
 
 	var latestRange = CHIM.HTMLEditor.GetRange(target);
-	if (latestRange == range) {
+	if (latestRange.startOffset == range.startOffset && latestRange.endOffset == range.endOffset) {
 		// look like the range has been updated correctly
 	} else {
 		console.debug('Failed to update existing Range object, force push it now!');
