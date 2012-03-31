@@ -594,7 +594,7 @@ CHIM.GetTarget = function(e) {
 	if (r.tagName == 'BODY') {
 		r = r.parentNode;
 	}
-	CHIM.peckable = r.tagName=='HTML' || r.type=='textarea' || r.type=='text';
+	CHIM.peckable = r.tagName=='HTML' || r.type=='textarea' || r.type=='text' || r.type=='search';
 
 	return r;
 };
