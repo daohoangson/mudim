@@ -125,6 +125,7 @@ def makeXenForo():
     # so I just use my preference (4 space, soft tab)
     fileList = [
         ['mudim-xenforo' + sep + 'addon-vietnamese_input_method.xml', sep + 'vietnamese_input_method.xml'],
+        ['mudim-xenforo' + sep + 'translation-vi-VN.xml', sep + 'translation-vi-VN.xml'],
         ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php'],
         ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php'],
         ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php'],

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language title="Tiếng Việt" date_format="j F Y" time_format="H:i" decimal_point="," thousands_separator="." language_code="vi-VN" text_direction="LTR" addon_id="vietnamese_input_method">
+  <phrase title="option_vim_accentRule" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Mặc định bật "Bỏ dấu kiểu mới"]]></phrase>
+  <phrase title="option_vim_method" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Kiểu gõ mặc định]]></phrase>
+  <phrase title="option_vim_speller" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Mặc định bật "Kiểm tra chính tả"]]></phrase>
+  <phrase title="vim_auto" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Tự động]]></phrase>
+  <phrase title="vim_method" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Kiểu gõ tiếng Việt]]></phrase>
+  <phrase title="vim_mix" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Tổng hợp]]></phrase>
+  <phrase title="vim_off" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Tắt]]></phrase>
+  <phrase title="vim_other_options" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Thiết lập khác]]></phrase>
+  <phrase title="vim_toggle" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Bật/Tắt]]></phrase>
+  <phrase title="vim_toggle_panel" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Ẩn/Hiện]]></phrase>
+  <phrase title="vim_use_new_accent_rule" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Bỏ dấu kiểu mới]]></phrase>
+  <phrase title="vim_use_speller" addon_id="vietnamese_input_method" version_id="1" version_string="1.0"><![CDATA[Kiểm tra chính tả]]></phrase>
+</language>
