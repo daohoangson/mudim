@@ -1030,11 +1030,27 @@ CHIM.Attach = function(e, r) {
 				e.onkeypress = CHIM.KeyHandler;
 				e.onmousedown = CHIM.MouseDown;
 			}
+			
+			if (e.iframe) {
+				// add support for Redactor
+				var body = e.getElementsByTagName('body');
+				if (body.length > 0) {
+					body = body[0];
+					if (body.getAttribute && body.getAttribute('contenteditable') == 'true') {
+						CHIM.Attach(body, true);
+					}
+				}
+			}
 		e.chim = true;
 	}
 
 	var f = e.getElementsByTagName('iframe');
 	for (var i = 0; i < f.length; i++) {
+		if (f[i].src != '') {
+			// bypass iframe with `src` attribute
+			// TODO: find way to detect cross-origin frames
+			continue;
+		}
 		var doc = (!window.opera && document.all) ?
 				f[i].contentWindow.document : f[i].contentDocument;
 		try {
