@@ -65,6 +65,7 @@ CHIM.separators = " !@#$%^&*()_+=-{}[]|\\:\";'<>?,./~`\r\n\t";
 //----------------------------------------------------------------------------
 CHIM.off = 0;
 CHIM.buffer = [];
+CHIM.foundOtherInputMethod = false;
 CHIM.dirty = false;
 //----------------------------------------------------------------------------
 // Function: CHIM.CharIsUI
@@ -899,7 +900,8 @@ CHIM.KeyHandler = function(e) {
 		var key = String.fromCharCode(keyCode);
 		if ( keyCode == CHIM.VK_SPACE || keyCode == CHIM.VK_ENTER ) {
 			CHIM.ClearBuffer();
-		} else if ( keyCode > CHIM.VK_SPACE && keyCode < CHIM.VK_LIMIT ) {
+			CHIM.foundOtherInputMethod = false;
+		} else if ( keyCode > CHIM.VK_SPACE && keyCode < CHIM.VK_LIMIT && !CHIM.foundOtherInputMethod ) {
 			if ( CHIM.dirty ) {
 				CHIM.UpdateBuffer( target );
 			}
@@ -922,6 +924,10 @@ CHIM.KeyHandler = function(e) {
 		}
 		else {
 			CHIM.dirty = true;
+
+			if ( keyCode > 255 ) {
+				CHIM.foundOtherInputMethod = true;
+			}
 		}
 	}
 	else { // process control key
