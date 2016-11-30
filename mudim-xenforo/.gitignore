@@ -1,0 +1,5 @@
+*.devhelper
+/upload/library/VIM/DevHelper/XFCP/*
+/target/*
+Config.php
+FileSums.php

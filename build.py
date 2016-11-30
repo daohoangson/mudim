@@ -124,11 +124,13 @@ def makeXenForo():
     # not sure why tabs and spaces were mixed like this...
     # so I just use my preference (4 space, soft tab)
     fileList = [
-        ['mudim-xenforo' + sep + 'addon-vietnamese_input_method.xml', sep + 'vietnamese_input_method.xml'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'addon-vietnamese_input_method.xml', sep + 'vietnamese_input_method.xml'],
         ['mudim-xenforo' + sep + 'translation-vi-VN.xml', sep + 'translation-vi-VN.xml'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'FileSums.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'FileSums.php'],
         ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Installer.php'],
         ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'Listener.php'],
-        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'ControllerPublic' + sep + 'Account.php'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'XenForo' + sep + 'ControllerPublic' + sep + 'Account.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'XenForo' + sep + 'ControllerPublic' + sep + 'Account.php'],
+        ['mudim-xenforo' + sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'XenForo' + sep + 'DataWriter' + sep + 'User.php', sep + 'upload' + sep + 'library' + sep + 'VIM' + sep + 'XenForo' + sep + 'DataWriter' + sep + 'User.php'],
         ['mudim' + sep + 'mudim.js', sep + 'upload' + sep + 'js' + sep + 'vim' + sep + 'mudim.js']
     ]
     zf = ZipFile('mudim-xenforo' + sep + 'mudim-xenforo.zip', 'w', ZIP_DEFLATED)

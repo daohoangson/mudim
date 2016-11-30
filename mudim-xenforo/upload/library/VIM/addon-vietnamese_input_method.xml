@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="vietnamese_input_method" title="Vietnamese Input Method" version_string="201409121356" version_id="4" url="" install_callback_class="VIM_Installer" install_callback_method="install" uninstall_callback_class="VIM_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="vietnamese_input_method" title="Vietnamese Input Method" version_string="201611301357" version_id="7" url="" install_callback_class="VIM_Installer" install_callback_method="install" uninstall_callback_class="VIM_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -34,13 +34,19 @@
 	</xen:if>
 </script>]]></template>
   </admin_templates>
-  <admin_template_modifications/>
+  <admin_template_modifications>
+    <modification template="footer" modification_key="vim" description="Inject our script to page footer." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#\A.+\z#s]]></find>
+      <replace><![CDATA[<xen:include template="vim" />
+
+$0]]></replace>
+    </modification>
+  </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="VIM_Listener" callback_method="load_class" active="1" hint="" description=""/>
-    <listener event_id="template_create" execute_order="10" callback_class="VIM_Listener" callback_method="template_create" active="1" hint="" description=""/>
-    <listener event_id="template_hook" execute_order="10" callback_class="VIM_Listener" callback_method="template_hook" active="1" hint="" description=""/>
-    <listener event_id="template_post_render" execute_order="10" callback_class="VIM_Listener" callback_method="template_post_render" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="VIM_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="VIM_Listener" callback_method="load_class_XenForo_ControllerPublic_Account" active="1" hint="XenForo_ControllerPublic_Account" description="XenForo_ControllerPublic_Account"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="VIM_Listener" callback_method="load_class_XenForo_DataWriter_User" active="1" hint="XenForo_DataWriter_User" description="XenForo_DataWriter_User"/>
     <listener event_id="visitor_setup" execute_order="10" callback_class="VIM_Listener" callback_method="visitor_setup" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron/>
@@ -110,7 +116,7 @@
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="vim" version_id="3" version_string="201203312015"><![CDATA[<xen:comment>Please update the public version of this template if you edit it!</xen:comment>
+    <template title="vim" version_id="4" version_string="201409121356"><![CDATA[<xen:comment>Please update the admin version of this template if you edit it!</xen:comment>
 <xen:require js="js/vim/mudim.js" />
 <script type="text/javascript">
     Mudim.LANG=[
@@ -139,16 +145,16 @@
 	    	Mudim.SetPreference();
 	</xen:if>
 </script>]]></template>
-    <template title="vim_preferences" version_id="1" version_string="1.0"><![CDATA[<dl class="ctrlUnit">
+    <template title="vim_preferences" version_id="4" version_string="201409121356"><![CDATA[<dl class="ctrlUnit">
 	<dt><label for="ctrl_vim_method">{xen:phrase vim_method}:</label></dt>
 	<dd>
 		<select name="vim[method]" class="textCtrl OptOut" id="ctrl_vim_method">
-			<option value="0" {xen:selected '{$vim.method} == 0'}>{xen:phrase vim_off}</option>
-			<option value="1" {xen:selected '{$vim.method} == 1'}>{xen:phrase vim_vni}</option>
-			<option value="2" {xen:selected '{$vim.method} == 2'}>{xen:phrase vim_telex}</option>
-			<option value="3" {xen:selected  '{$vim.method} == 3'}>{xen:phrase vim_viqr}</option>
-			<option value="4" {xen:selected '{$vim.method} == 4'}>{xen:phrase vim_mix}</option>
-			<option value="5" {xen:selected '{$vim.method} == 5'}>{xen:phrase vim_auto}</option>
+			<option value="0" {xen:selected '{$visitor.vietnamese_input_method.method} == 0'}>{xen:phrase vim_off}</option>
+			<option value="1" {xen:selected '{$visitor.vietnamese_input_method.method} == 1'}>{xen:phrase vim_vni}</option>
+			<option value="2" {xen:selected '{$visitor.vietnamese_input_method.method} == 2'}>{xen:phrase vim_telex}</option>
+			<option value="3" {xen:selected '{$visitor.vietnamese_input_method.method} == 3'}>{xen:phrase vim_viqr}</option>
+			<option value="4" {xen:selected '{$visitor.vietnamese_input_method.method} == 4'}>{xen:phrase vim_mix}</option>
+			<option value="5" {xen:selected '{$visitor.vietnamese_input_method.method} == 5'}>{xen:phrase vim_auto}</option>
 		</select>
 	</dd>
 </dl>
@@ -159,21 +165,38 @@
 		<ul>
 			<li>
 				<label>
-					<input type="checkbox" name="vim[speller]" value="1" {xen:checked $vim.speller} class="OptOut"/>
+					<input type="checkbox" name="vim[speller]" value="1" {xen:checked
+						$visitor.vietnamese_input_method.speller} class="OptOut"/>
 					{xen:phrase vim_use_speller}
 				</label>
 			</li>
 			<li>
 				<label>
-					<input type="checkbox" name="vim[accentRule]" value="1" {xen:checked $vim.accentRule} class="OptOut"/>
+					<input type="checkbox" name="vim[accentRule]" value="1" {xen:checked
+						$visitor.vietnamese_input_method.accentRule} class="OptOut"/>
 					{xen:phrase vim_use_new_accent_rule}
 				</label>
 			</li>
 		</ul>
 	</dd>
-</dl>]]></template>
+</dl>
+
+<input type="hidden" name="vim_preferences" value="1" />]]></template>
   </templates>
-  <public_template_modifications/>
+  <public_template_modifications>
+    <modification template="page_container_js_body" modification_key="vim" description="Inject our script to page footer." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#\A.+\z#s]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="vim" />]]></replace>
+    </modification>
+    <modification template="account_preferences" modification_key="vim_preferences" description="Display our preferences after the locale preferences" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="account_preferences_locale">]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="vim_preferences" />]]></replace>
+    </modification>
+  </public_template_modifications>
   <bb_code_media_sites/>
   <bb_codes/>
 </addon>
